@@ -188,7 +188,7 @@ bool Fraction::operator<=(const Fraction &right) {
 
 bool Fraction::operator==(const double& right) {
     double fraction;
-    fraction = num/den;
+    fraction = (float)num/den;
     if(fraction == right)
         return true;
     else
@@ -197,7 +197,7 @@ bool Fraction::operator==(const double& right) {
 
 bool Fraction::operator!=(const double& right) {
     double fraction;
-    fraction = num/den;
+    fraction = (float)num/den;
     if(fraction != right)
         return true;
     else

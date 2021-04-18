@@ -65,6 +65,23 @@ Fraction Matrix::abs(int pos) {
     return Result;
 }
 
+bool Matrix::isUpperTriangular() {
+    bool result = false;
+    if (n_col == n_row) {
+        if (values[0] == 0) // If first value is 0, it cannot be upper triangular!
+            result = false;
+        else result = true;
+        for (int i = 1; i < n_row && result == true; i++) {
+            for (int j = 0; j < i; j++)
+                if (values[i * n_col + j] != 0)
+                    result = false;
+            if (values[i * n_col +i] == 0) // Values in the diagonal must not be equal to 0!
+                result = false;
+        }
+    }
+    return result;
+}
+
 bool Matrix::Gauss() {
     bool no_error = true;
     Fraction m;
@@ -318,4 +335,131 @@ Fraction Matrix::NormInf() {
         V_Sum.setValue(i,x);
     }
     return V_Sum.findMax();
+}
+
+// ................ FULL MATRIX: ................
+
+void fullMatrix::Print() {
+    for (int i=0; i<(n_row); i++){
+        std::cout << "\n";
+        for (int j=0; j<n_col; j++) {
+            values[i*n_col+j].Print();
+            std::cout << "\t";
+        }
+        std::cout << "|";
+        b[i].Print();
+    }
+}
+
+bool fullMatrix::Gauss() {
+    Fraction m;
+    bool no_error = true;
+    for (int i = 0; i < (n_row-1) && no_error; i++){
+        if(values[i * n_col + i] != 0){
+            for (int j = i+1; j < n_row; j++) {
+                m = values[j * n_col + i]/values[i * n_col + i];
+                values[j * n_col + i].num = 0;
+                values[j * n_col + i].den = 1;
+                for (int k = i+1; k < n_col; k++) {
+                    values[j * n_col + k] = values[j * n_col + k] - m * values[i * n_col + k];
+                }
+                b[j] = b[j] - m*b[i];
+            }
+        }
+        else
+            no_error = false;
+    }
+    return no_error;
+}
+
+bool fullMatrix::GaussPP() {
+    Fraction m;
+    bool no_error = true;
+    for (int i = 0; i < (n_row - 1) && no_error; i++) {
+        PartialPivoting(i, i);
+        if (values[i * n_col + i] != 0) {
+            for (int j = i + 1; j < n_row; j++) {
+                m = values[j * n_col + i] / values[i * n_col + i];
+                values[j * n_col + i].num = 0;
+                values[j * n_col + i].den = 1;
+                for (int k = i + 1; k < n_col; k++) {
+                    values[j * n_col + k] = values[j * n_col + k] - m * values[i * n_col + k];
+                }
+                b[j] = b[j] - m * b[i];
+            }
+        } else
+            no_error = false;
+    }
+    return no_error;
+}
+
+bool fullMatrix::SwapRows(int row1, int row2) {
+    if (isRow(row1) && isRow(row2)) {
+        Fraction aux;
+        for (int i = 0; i < n_col; i++) {
+            aux = values[row1 * n_col + i];
+            values[row1 * n_col + i] = values[row2 * n_col + i];
+            values[row2 * n_col + i] = aux;
+        }
+        aux = b[row1];
+        b[row1] = b[row2];
+        b[row2] = aux;
+        return true;
+    } else {
+        std::cout << "\nERROR: Illegal row detected for swap!\n";
+        return false;
+    }
+}
+
+bool fullMatrix::PartialPivoting(int firstRow, int firstCol) {
+    Fraction max;
+    int rowmax = firstRow;
+    bool no_error = true;
+    if (isRow(firstRow) && isCol(firstCol)) {
+        max = values[firstRow * n_col + firstCol];
+        for (int i = firstRow + 1; i < n_row; i++) {
+            if (values[i * n_col + firstCol] > max) {
+                max = values[i * n_col + firstCol];
+                rowmax = i;
+            }
+        }
+        if(rowmax != firstRow) {
+            SwapRows(firstRow, rowmax);
+        }
+    }
+    else no_error = false;
+
+    return no_error;
+}
+
+bool fullMatrix::Back_Substitution() {
+    bool no_error = true;
+    Fraction* x = new Fraction[n_row];
+    if (isUpperTriangular()) {
+        Fraction sum;
+        x[n_row-1] = b[n_row-1] / values[n_col*n_row-1];
+        for (int i = (n_row-2) ; i >= 0; i--) {
+            sum.num = 0;
+            sum.den = 1;
+            for (int j = i+1; j < n_col; j++) {
+                sum = sum + values[i * n_col + j] * x[j];
+            }
+            x[i] = (b[i] - sum)/values[i*n_row+i];
+        }
+    }
+    else no_error = false;
+
+    if (no_error){
+        for (int k=0; k<n_row; k++) {
+            std::cout << "x[" << k + 1 << "] = ";
+            x[k].Print();
+            std::cout << std::endl;
+        }
+    }
+    else if (b[n_row - 1] == 0) {// if last known term is == 0 -> infinite solutions!
+        std::cout << "\nERROR: Infinite solutions!\n" << std::endl;
+    }
+    else std::cout << "\nERROR: No solutions!\n" << std::endl;
+
+    return no_error;
 }

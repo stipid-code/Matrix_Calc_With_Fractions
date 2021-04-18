@@ -71,6 +71,8 @@ public:
 
     Fraction abs(int pos);
 
+    bool isUpperTriangular(); // Checks if the matrix is upper triangular
+
     virtual bool Gauss();
     virtual void Transpose();
     virtual bool SwapRows(int row1, int row2);
@@ -92,6 +94,43 @@ protected:
     int n_col;
     int n_row;
     Fraction* values = new Fraction[n_col*n_row];
+};
+
+class fullMatrix : public Matrix {
+public:
+    fullMatrix(Fraction const V[], int row_number, int col_number, Fraction const bi[]) : Matrix(V, row_number, col_number) {
+        for (int i=0; i<row_number; i++)
+            b[i] = bi[i];
+    }
+
+    fullMatrix(int row_number, int col_number) : Matrix(row_number, col_number){
+        Fraction input;
+        std::cout << "Insert known terms: \n";
+        for (int i = 0; i < row_number; i++) {
+            std::cout << "Insert b[" << i + 1 << "]:\t";
+            input.Input();
+            b[i] = input;
+        }
+    }
+
+    fullMatrix(fullMatrix& that) : Matrix(that) {
+        for (int i = 0; i < n_row; i++)
+            b[i] = that.b[i];
+    }
+
+    ~fullMatrix() override{
+        delete[] b;
+    }
+
+    void Print() override;
+    bool Gauss() override;
+    bool SwapRows(int row1, int row2) override;
+    bool PartialPivoting(int firstRow, int firstCol) override;
+    bool GaussPP() override;
+    bool Back_Substitution(); // Prints the solutions of an upper triangular matrix
+
+protected:
+    Fraction* b = new Fraction[n_row];
 };
 
 #endif //MATRIX_CALC_MATRIX_H
