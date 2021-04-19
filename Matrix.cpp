@@ -256,6 +256,7 @@ bool Matrix::Inversion() {
                     }
                     sum = sum / values[i * n_col + i];
                     X.values[i * n_col + c] = sum;
+                    X.values[i * n_col + c].Simplify();
                 }
             }
             *this = X;
@@ -263,6 +264,58 @@ bool Matrix::Inversion() {
     }
     else no_error = false;
     return no_error;
+}
+
+bool Matrix::Determinant(Fraction &det) {
+    bool no_error = true;
+    Matrix aux(*this);
+    if(aux.GaussPP()) {
+        Fraction product;
+        for (int i = 0; i < n_row && no_error == true; i++) {
+            if (aux.values[i * n_col + i].num != 0) {
+                product = product * aux.values[i * n_col + i];
+            } else no_error = false;
+        }
+        det = product;
+    } else no_error = false;
+    return no_error;
+}
+
+void Matrix::Extract_Diag() {
+    for (int i = 0; i < n_row; i++)
+        for (int j = 0; j < n_row; j++) {
+            if (i != j) {
+                values[i * n_col + j].num = 0;
+                values[i * n_col + j].den = 1;
+            }
+        }
+}
+
+void Matrix::Delete_Diag() {
+    for (int i = 0; i < n_row; i++) {
+        values[i * n_col + i].num = 0;
+        values[i * n_col + i].den = 1;
+    }
+}
+
+void Matrix::Extract_Upper(){
+    for (int i = 0; i < n_row; i++)
+        for (int j = 0; j < n_row; j++) {
+            if (i > j) {
+                values[i * n_col + j].num = 0;
+                values[i * n_col + j].den = 1;
+            }
+        }
+}
+
+void Matrix::Extract_Lower(){
+    for (int i = 0; i < n_row; i++)
+        for (int j = 0; j < n_row; j++) {
+            if (i < j) {
+                values[i * n_col + j].num = 0;
+                values[i * n_col + j].den = 1;
+            }
+        }
 }
 
 bool Matrix::RowMax(int row, Fraction& result) {

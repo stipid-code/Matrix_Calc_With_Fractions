@@ -106,6 +106,7 @@ void Fraction::Input() {
         ss1 >> num;
         den = 1;
     }
+    Simplify();
 }
 
 Fraction Fraction::operator+(const Fraction& right) {

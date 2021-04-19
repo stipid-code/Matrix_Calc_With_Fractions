@@ -26,6 +26,7 @@ int main() {
         Matrix B(A);
         Matrix C(A);
         Matrix D(A);
+        Matrix E(A);
         A.Print();
         std::cout << "\n\n";
         std::cout << "Norm 1 is: ";
@@ -53,6 +54,11 @@ int main() {
             D.Print();
             std::cout << "\n";
         } else std::cout << "NOT INVERTIBLE!\n";
+        Fraction det;
+        if (E.Determinant(det)){
+            std::cout << "\nDeterminant: ";
+            det.Print();
+        } else std::cout << "NO DETERMINANT!\n";
     }
     else {
         fullMatrix A(nr, nc);
