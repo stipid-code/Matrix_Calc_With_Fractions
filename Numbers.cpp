@@ -224,13 +224,27 @@ Fraction Fraction::abs(const Fraction& input) {
 void Fraction::MakeFraction(std::string input) {
     std::string s_num;
     std::string s_den;
-    s_num = input[0];
-    s_den = '1';
-    for (int i = 2; i < input.length(); i++){
-        s_num += input[i];
-        s_den += '0';
+    bool dot_found = false;
+    int pos_dot = -1;
+
+    for (int i = 0; i < input.length() && dot_found== false; i++) {
+        if (input[i] == '.') {
+            dot_found = true;
+        }
+        pos_dot++;
     }
-    num = std::stoi(s_num);
-    den = std::stoi(s_den);
-    Simplify();
+
+    if (dot_found) {
+        s_den = '1';
+        for (int k = 0; k < pos_dot; k++) {
+            s_num += input[k];
+        }
+        for (int i = pos_dot+1; i < input.length(); i++) {
+            s_num += input[i];
+            s_den += '0';
+        }
+        num = std::stoi(s_num);
+        den = std::stoi(s_den);
+        Simplify();
+    }
 }
