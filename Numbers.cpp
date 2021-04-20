@@ -4,6 +4,7 @@
 
 #include "Numbers.h"
 #include <iostream>
+const double epsilon = 0.000001;
 
 void Round_zero(float& a, float epsilon){
     if (fabs(a)<epsilon)
@@ -74,7 +75,8 @@ void Fraction::Simplify() {
 }
 
 void Fraction::Input() {
-    std::cout << "Insert num/den or num: ";
+    bool isFloat = false;
+    std::cout << "Insert num/den (int) or num (int or float): ";
     std::string input;
     std::string first, second;
     std::stringstream ss1, ss2;
@@ -101,10 +103,17 @@ void Fraction::Input() {
     else {
         for (int i = 0; i < input.length(); i++){
             first += input[i];
+            if (isFloat == false && input[i] == '.')
+                isFloat = true;
         }
-        ss1 << first;
-        ss1 >> num;
-        den = 1;
+        if (isFloat) {
+            MakeFraction(first);
+        }
+        else {
+            ss1 << first;
+            ss1 >> num;
+            den = 1;
+        }
     }
     Simplify();
 }
@@ -210,4 +219,18 @@ Fraction Fraction::abs(const Fraction& input) {
     output.num = std::abs(num);
     output.den = std::abs(den);
     return output;
+}
+
+void Fraction::MakeFraction(std::string input) {
+    std::string s_num;
+    std::string s_den;
+    s_num = input[0];
+    s_den = '1';
+    for (int i = 2; i < input.length(); i++){
+        s_num += input[i];
+        s_den += '0';
+    }
+    num = std::stoi(s_num);
+    den = std::stoi(s_den);
+    Simplify();
 }

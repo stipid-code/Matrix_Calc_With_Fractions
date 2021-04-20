@@ -13,7 +13,7 @@
 
 void Round_zero(float& a, float epsilon); // if the float number is too near to 0, a becomes 0
 void Round_zero(double& a, double epsilon); // if the double number is too near to 0, a becomes 0
-bool findPeriod(std::string number, int& posA, int& posB);
+bool Almost_equal(double a, double b, double epsilon);
 
 class Fraction {
 public:
@@ -48,6 +48,8 @@ public:
         }
         else std::cout << num << "\t";
     }
+
+    void MakeFraction(std::string input); // attempts to return a fraction given a double
 
 public:
     int num;
