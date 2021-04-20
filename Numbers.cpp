@@ -41,7 +41,7 @@ void Fraction::Simplify() {
     bool found;
     if (den != 1 && num != 1) {
         do {
-            if (num > den) {
+            if (std::abs(num) > std::abs(den)) {
                 count = 2;
                 found = false;
                 while (count < den && found == false){
