@@ -42,11 +42,11 @@ public:
 
     void Print() {
         if (den > 1)
-            std::cout << num << "/" << den << "\t";
+            std::cout << num << "/" << den;
         else if (den < 1){
-            std::cout << -num << "/" << -den << "\t";
+            std::cout << -num << "/" << -den;
         }
-        else std::cout << num << "\t";
+        else std::cout << num;
     }
 
     void MakeFraction(std::string input); // attempts to return a fraction given a double

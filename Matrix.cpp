@@ -503,9 +503,12 @@ bool fullMatrix::Back_Substitution() {
     else no_error = false;
 
     if (no_error){
+        double decimal;
         for (int k=0; k<n_row; k++) {
             std::cout << "x[" << k + 1 << "] = ";
             x[k].Print();
+            decimal = (double)x[k].num/(double)x[k].den;
+            std::cout << " = " << decimal;
             std::cout << std::endl;
         }
     }
