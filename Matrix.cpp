@@ -9,8 +9,10 @@ double const epsilon = 0.0001;
 void Matrix::Print() {
     for (int i=0; i<n_row; i++){
         std::cout << "\n";
-        for (int j=0; j<n_col; j++)
+        for (int j=0; j<n_col; j++) {
             values[i * n_col + j].Print();
+            std::cout << "\t";
+        }
     }
 }
 
