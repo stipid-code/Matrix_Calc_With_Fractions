@@ -222,7 +222,7 @@ bool Matrix::CraftIdentity() {
 
 bool Matrix::Inversion() {
     bool no_error = true;
-    if (n_col == n_row) {
+    if (n_col == n_row && isUpperTriangular()) {
         Fraction m;
         Matrix X(n_row, n_col, 0);
         Matrix I(n_row, n_col, 0);

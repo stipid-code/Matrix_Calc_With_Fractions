@@ -28,12 +28,18 @@ int main() {
         Matrix D(A);
         Matrix E(A);
         A.Print();
+        Fraction det;
         std::cout << "\n\n";
         std::cout << "Norm 1 is: ";
         A.Norm1().Print();
         std::cout << "\n";
         std::cout << "Infinite norm is: ";
         A.NormInf().Print();
+        std::cout << "\n";
+        if (E.Determinant(det)){
+            std::cout << "Determinant: ";
+            det.Print();
+        } else std::cout << "NO DETERMINANT!\n";
         std::cout << "\n";
         std::cout << "\nGauss:";
         if (A.Gauss()) {
@@ -53,12 +59,7 @@ int main() {
             std::cout << "\nInverted matrix:";
             D.Print();
             std::cout << "\n";
-        } else std::cout << "NOT INVERTIBLE!\n";
-        Fraction det;
-        if (E.Determinant(det)){
-            std::cout << "\nDeterminant: ";
-            det.Print();
-        } else std::cout << "NO DETERMINANT!\n";
+        } else std::cout << "\nNOT INVERTIBLE!\n";
     }
     else {
         fullMatrix A(nr, nc);
