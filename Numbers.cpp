@@ -42,9 +42,9 @@ void Fraction::Simplify() {
     if (den != 1 && num != 1) {
         do {
             if (std::abs(num) > std::abs(den)) {
-                count = 2;
+                count = 2; // first attempt to find a divider
                 found = false;
-                while (count < den && found == false){
+                while (count < std::abs(den) && found == false){
                     if (num % count == 0 && den % count == 0) {
                         div = count;
                         found = true;
@@ -58,7 +58,7 @@ void Fraction::Simplify() {
             } else {
                 count = 2;
                 found = false;
-                while (count < num && found == false){
+                while (count < std::abs(num) && found == false){
                     if (num % count == 0 && den % count == 0) {
                         div = count;
                         found = true;
