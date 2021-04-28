@@ -118,6 +118,22 @@ void Fraction::Input() {
     Simplify();
 }
 
+void Fraction::Print() {
+    if (den > 1)
+        std::cout << num << "/" << den;
+    else if (den == 1){
+        std::cout << num;
+    }
+    else if (den == 0){
+        std::cout << "nan";
+    }
+    else if (den < 0 && den != -1) {
+        std::cout << -num << "/" << -den;
+    } else {
+        std::cout << -num;
+    }
+}
+
 Fraction Fraction::operator+(const Fraction& right) {
     Fraction Result;
     int new_den;

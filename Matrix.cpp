@@ -11,7 +11,7 @@ void Matrix::Print() {
         std::cout << "\n";
         for (int j=0; j<n_col; j++) {
             values[i * n_col + j].Print();
-            std::cout << "\t";
+            std::cout << "\t\t\t";
         }
     }
 }
@@ -222,7 +222,11 @@ bool Matrix::CraftIdentity() {
 
 bool Matrix::Inversion() {
     bool no_error = true;
-    if (n_col == n_row && isUpperTriangular()) {
+    bool check;
+    Matrix Z(*this);
+    Z.GaussPP();
+    check = Z.isUpperTriangular(); // checks if the matrix can be inverted
+    if (n_col == n_row && check) {
         Fraction m;
         Matrix X(n_row, n_col, 0);
         Matrix I(n_row, n_col, 0);
@@ -399,7 +403,7 @@ void fullMatrix::Print() {
         std::cout << "\n";
         for (int j=0; j<n_col; j++) {
             values[i*n_col+j].Print();
-            std::cout << "\t";
+            std::cout << "\t\t\t";
         }
         std::cout << "|";
         b[i].Print();
