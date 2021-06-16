@@ -3,20 +3,18 @@
 //
 
 #include "Matrix.h"
-double const epsilon = 0.0001;
 
-
-void Matrix::Print() {
+void Matrix::print() const {
     for (int i=0; i<n_row; i++){
         std::cout << "\n";
         for (int j=0; j<n_col; j++) {
-            values[i * n_col + j].Print();
+            values[i * n_col + j].print();
             std::cout << "\t\t\t";
         }
     }
 }
 
-Matrix Matrix::operator+(const Matrix &right) {
+Matrix Matrix::operator+(const Matrix &right) const{
     Matrix Result(n_row, n_col, 0);
     if (n_row == n_col && n_col == right.n_col && n_row == right.n_row) {
         for (int i = 0; i < n_row; i++)
@@ -26,7 +24,7 @@ Matrix Matrix::operator+(const Matrix &right) {
     return Result;
 }
 
-Matrix Matrix::operator-(const Matrix &right) {
+Matrix Matrix::operator-(const Matrix &right) const{
     Matrix Result(n_row, n_col, 0);
     if (n_row == n_col && n_col == right.n_col && n_row == right.n_row) {
         for (int i = 0; i < n_row; i++)
@@ -36,7 +34,7 @@ Matrix Matrix::operator-(const Matrix &right) {
     return Result;
 }
 
-Matrix Matrix::operator*(const Matrix &right) {
+Matrix Matrix::operator*(const Matrix &right) const{
     Matrix Result(n_row, n_col, 0);
     if (n_row == n_col && n_col == right.n_col && n_row == right.n_row) {
         for (int i = 0; i < n_row; i++) {
@@ -84,7 +82,7 @@ bool Matrix::isUpperTriangular() {
     return result;
 }
 
-bool Matrix::Gauss() {
+bool Matrix::gauss() {
     bool no_error = true;
     Fraction m;
     for (int i = 0; i < (n_row-1) && no_error; i++){
@@ -104,7 +102,7 @@ bool Matrix::Gauss() {
     return no_error;
 }
 
-void Matrix::Transpose() {
+void Matrix::transpose() {
     Fraction* aux = new Fraction[n_col*n_row];
     int aux2;
     for (int i=0; i<n_row; i++){ // aux becomes the transpose matrix
@@ -123,7 +121,7 @@ void Matrix::Transpose() {
 }
 
 
-bool Matrix::SwapRows(int row1, int row2) {
+bool Matrix::swapRows(int row1, int row2) {
     if (isRow(row1) && isRow(row2)){
         Fraction aux;
         for (int i = 0; i < n_col; i++) {
@@ -139,7 +137,7 @@ bool Matrix::SwapRows(int row1, int row2) {
     }
 }
 
-bool Matrix::SwapColumns(int col1, int col2) {
+bool Matrix::swapColumns(int col1, int col2) {
     if (isCol(col1) && isRow(col2)){
         Fraction aux;
         for (int i = 0; i < n_col; i++) {
@@ -155,7 +153,7 @@ bool Matrix::SwapColumns(int col1, int col2) {
     }
 }
 
-bool Matrix::PartialPivoting(int firstRow, int firstCol) {
+bool Matrix::partialPivoting(int firstRow, int firstCol) {
     Fraction max;
     int rowmax = firstRow;
     bool no_error = true;
@@ -169,7 +167,7 @@ bool Matrix::PartialPivoting(int firstRow, int firstCol) {
             }
         }
         if(rowmax != firstRow) {
-            SwapRows(firstRow, rowmax);
+            swapRows(firstRow, rowmax);
         }
     }
     else no_error = false;
@@ -177,11 +175,11 @@ bool Matrix::PartialPivoting(int firstRow, int firstCol) {
     return no_error;
 }
 
-bool Matrix::GaussPP() {
+bool Matrix::gaussPP() {
     Fraction m;
     bool no_error = true;
     for (int i = 0; i < (n_row-1) && no_error; i++){
-        PartialPivoting(i, i);
+        partialPivoting(i, i);
         if(values[i * n_col + i] != 0){
             for (int j = i+1; j < n_row; j++) {
                 m = values[j * n_col + i]/values[i * n_col + i];
@@ -198,7 +196,7 @@ bool Matrix::GaussPP() {
     return no_error;
 }
 
-bool Matrix::CraftIdentity() {
+bool Matrix::craftIdentity() {
     bool no_error = true;
     if (n_col == n_row) {
         for (int i = 0; i < n_row; i++)
@@ -220,17 +218,17 @@ bool Matrix::CraftIdentity() {
     return no_error;
 }
 
-bool Matrix::Inversion() {
+bool Matrix::inversion() {
     bool no_error = true;
     bool check;
     Matrix Z(*this);
-    Z.GaussPP();
+    Z.gaussPP();
     check = Z.isUpperTriangular(); // checks if the matrix can be inverted
     if (n_col == n_row && check) {
         Fraction m;
         Matrix X(n_row, n_col, 0);
         Matrix I(n_row, n_col, 0);
-        I.CraftIdentity();
+        I.craftIdentity();
 
         for (int i = 0; i < (n_row - 1) && no_error; i++) {
             if (values[i * n_col + i] != 0) {
@@ -262,7 +260,7 @@ bool Matrix::Inversion() {
                     }
                     sum = sum / values[i * n_col + i];
                     X.values[i * n_col + c] = sum;
-                    X.values[i * n_col + c].Simplify();
+                    X.values[i * n_col + c].simplify();
                 }
             }
             *this = X;
@@ -272,10 +270,10 @@ bool Matrix::Inversion() {
     return no_error;
 }
 
-bool Matrix::Determinant(Fraction &det) {
+bool Matrix::determinant(Fraction &det) const{
     bool no_error = true;
     Matrix aux(*this);
-    if(aux.GaussPP()) {
+    if(aux.gaussPP()) {
         Fraction product;
         for (int i = 0; i < n_row && no_error == true; i++) {
             if (aux.values[i * n_col + i].num != 0) {
@@ -287,7 +285,7 @@ bool Matrix::Determinant(Fraction &det) {
     return no_error;
 }
 
-void Matrix::Extract_Diag() {
+void Matrix::extractDiag() {
     for (int i = 0; i < n_row; i++)
         for (int j = 0; j < n_row; j++) {
             if (i != j) {
@@ -297,14 +295,14 @@ void Matrix::Extract_Diag() {
         }
 }
 
-void Matrix::Delete_Diag() {
+void Matrix::deleteDiag() {
     for (int i = 0; i < n_row; i++) {
         values[i * n_col + i].num = 0;
         values[i * n_col + i].den = 1;
     }
 }
 
-void Matrix::Extract_Upper(){
+void Matrix::extractUpper(){
     for (int i = 0; i < n_row; i++)
         for (int j = 0; j < n_row; j++) {
             if (i > j) {
@@ -314,7 +312,7 @@ void Matrix::Extract_Upper(){
         }
 }
 
-void Matrix::Extract_Lower(){
+void Matrix::extractLower(){
     for (int i = 0; i < n_row; i++)
         for (int j = 0; j < n_row; j++) {
             if (i < j) {
@@ -324,7 +322,7 @@ void Matrix::Extract_Lower(){
         }
 }
 
-bool Matrix::RowMax(int row, Fraction& result) {
+bool Matrix::rowMax(int row, Fraction& result) const{
     if (isRow(row)) {
         Fraction max = values[(row-1)*n_col];
         for (int i = 1; i < n_col; i++) {
@@ -338,7 +336,7 @@ bool Matrix::RowMax(int row, Fraction& result) {
     return false;
 }
 
-bool Matrix::ColMax(int col, Fraction& result) {
+bool Matrix::colMax(int col, Fraction& result) const{
     if (isCol(col)) {
         Fraction max = values[col];
         for (int i = 1; i < n_row; i++) {
@@ -352,7 +350,7 @@ bool Matrix::ColMax(int col, Fraction& result) {
     return false;
 }
 
-bool Matrix::AbsRowSum(int row, Fraction& result) {
+bool Matrix::absRowSum(int row, Fraction& result){
     if(isRow(row)) {
         Fraction sum(0, 1);
         for (int i = 0; i < n_col; i++)
@@ -364,7 +362,7 @@ bool Matrix::AbsRowSum(int row, Fraction& result) {
     return false;
 }
 
-bool Matrix::AbsColSum(int col, Fraction& result) {
+bool Matrix::absColSum(int col, Fraction& result){
     if (isCol(col)) {
         Fraction sum(0, 1);
         for (int i = 0; i < n_row; i++)
@@ -376,41 +374,55 @@ bool Matrix::AbsColSum(int col, Fraction& result) {
     return false;
 }
 
-Fraction Matrix::Norm1() {
+Fraction Matrix::norm1(){
     Vector V_Sum(n_col);
     Fraction x;
     for (int i=0; i<n_col; i++){
-        AbsColSum(i,x);
+        absColSum(i, x);
         V_Sum.setValue(i,x);
     }
     return V_Sum.findMax();
 }
 
-Fraction Matrix::NormInf() {
+Fraction Matrix::normInf(){
     Vector V_Sum(n_row);
     Fraction x;
     for (int i=0; i<n_row; i++){
-        AbsRowSum(i,x);
+        absRowSum(i, x);
         V_Sum.setValue(i,x);
     }
     return V_Sum.findMax();
+}
+
+Fraction Matrix::condNorm1() const{
+    Matrix X(*this);
+    Matrix Inv(*this);
+    Inv.inversion();
+    return X.norm1() * Inv.norm1();
+}
+
+Fraction Matrix::condNormInf() const{
+    Matrix X(*this);
+    Matrix Inv(*this);
+    Inv.inversion();
+    return X.normInf() * Inv.normInf();
 }
 
 // ................ FULL MATRIX: ................
 
-void fullMatrix::Print() {
+void fullMatrix::print() const{
     for (int i=0; i<(n_row); i++){
         std::cout << "\n";
         for (int j=0; j<n_col; j++) {
-            values[i*n_col+j].Print();
+            values[i * n_col + j].print();
             std::cout << "\t\t\t";
         }
         std::cout << "|";
-        b[i].Print();
+        b[i].print();
     }
 }
 
-bool fullMatrix::Gauss() {
+bool fullMatrix::gauss() {
     Fraction m;
     bool no_error = true;
     for (int i = 0; i < (n_row-1) && no_error; i++){
@@ -431,11 +443,11 @@ bool fullMatrix::Gauss() {
     return no_error;
 }
 
-bool fullMatrix::GaussPP() {
+bool fullMatrix::gaussPP() {
     Fraction m;
     bool no_error = true;
     for (int i = 0; i < (n_row - 1) && no_error; i++) {
-        PartialPivoting(i, i);
+        partialPivoting(i, i);
         if (values[i * n_col + i] != 0) {
             for (int j = i + 1; j < n_row; j++) {
                 m = values[j * n_col + i] / values[i * n_col + i];
@@ -452,7 +464,7 @@ bool fullMatrix::GaussPP() {
     return no_error;
 }
 
-bool fullMatrix::SwapRows(int row1, int row2) {
+bool fullMatrix::swapRows(int row1, int row2) {
     if (isRow(row1) && isRow(row2)) {
         Fraction aux;
         for (int i = 0; i < n_col; i++) {
@@ -470,7 +482,7 @@ bool fullMatrix::SwapRows(int row1, int row2) {
     }
 }
 
-bool fullMatrix::PartialPivoting(int firstRow, int firstCol) {
+bool fullMatrix::partialPivoting(int firstRow, int firstCol) {
     Fraction max;
     int rowmax = firstRow;
     bool no_error = true;
@@ -483,7 +495,7 @@ bool fullMatrix::PartialPivoting(int firstRow, int firstCol) {
             }
         }
         if(rowmax != firstRow) {
-            SwapRows(firstRow, rowmax);
+            swapRows(firstRow, rowmax);
         }
     }
     else no_error = false;
@@ -491,7 +503,7 @@ bool fullMatrix::PartialPivoting(int firstRow, int firstCol) {
     return no_error;
 }
 
-bool fullMatrix::Back_Substitution() {
+bool fullMatrix::backSubstitution() {
     bool no_error = true;
     Fraction* x = new Fraction[n_row];
     if (isUpperTriangular()) {
@@ -512,8 +524,8 @@ bool fullMatrix::Back_Substitution() {
         double decimal;
         for (int k=0; k<n_row; k++) {
             std::cout << "x[" << k + 1 << "] = ";
-            x[k].Print();
-            decimal = (double)x[k].num/(double)x[k].den;
+            x[k].print();
+            decimal = x[k].floatify();
             std::cout << " = " << decimal;
             std::cout << std::endl;
         }

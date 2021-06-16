@@ -4,30 +4,8 @@
 
 #include "Numbers.h"
 #include <iostream>
-const double epsilon = 0.000001;
 
-void Round_zero(float& a, float epsilon){
-    if (fabs(a)<epsilon)
-        a = 0;
-}
-
-void Round_zero(double& a, double epsilon){
-    if (fabs(a)<epsilon)
-        a = 0;
-}
-
-bool Almost_equal(double a, double b, double epsilon){
-    double diff = fabs(a - b);
-    a = fabs(a);
-    b = fabs(b);
-    double largest = a > b ? a : b;
-    if (diff * largest < epsilon)
-        return true;
-    else
-        return false;
-}
-
-void Fraction::Simplify() {
+void Fraction::simplify() {
     if (num != 0 && den % num == 0){
         den = den/num;
         num = 1;
@@ -74,7 +52,7 @@ void Fraction::Simplify() {
     }
 }
 
-void Fraction::Input() {
+void Fraction::input() {
     bool isFloat = false;
     std::cout << "Insert num/den (int) or num (int or float): ";
     std::string input;
@@ -107,7 +85,7 @@ void Fraction::Input() {
                 isFloat = true;
         }
         if (isFloat) {
-            MakeFraction(first);
+            makeFraction(first);
         }
         else {
             ss1 << first;
@@ -115,10 +93,10 @@ void Fraction::Input() {
             den = 1;
         }
     }
-    Simplify();
+    simplify();
 }
 
-void Fraction::Print() {
+void Fraction::print() const{
     if (den > 1)
         std::cout << num << "/" << den;
     else if (den == 1){
@@ -134,7 +112,11 @@ void Fraction::Print() {
     }
 }
 
-Fraction Fraction::operator+(const Fraction& right) {
+float Fraction::floatify() const {
+    return (float)num/(float)den;
+}
+
+Fraction Fraction::operator+(const Fraction& right) const{
     Fraction Result;
     int new_den;
     new_den = den * right.den;
@@ -142,11 +124,11 @@ Fraction Fraction::operator+(const Fraction& right) {
         Result.num = num * (new_den / den) + right.num * (new_den / right.den);
         Result.den = new_den;
     }
-    Result.Simplify();
+    Result.simplify();
     return Result;
 }
 
-Fraction Fraction::operator-(const Fraction& right) {
+Fraction Fraction::operator-(const Fraction& right) const{
     Fraction Result;
     int new_den;
     new_den = den * right.den;
@@ -154,33 +136,33 @@ Fraction Fraction::operator-(const Fraction& right) {
         Result.num = num * (new_den / den) - right.num * (new_den / right.den);
         Result.den = new_den;
     }
-    Result.Simplify();
+    Result.simplify();
     return Result;
 }
 
-Fraction Fraction::operator*(const Fraction &right) {
+Fraction Fraction::operator*(const Fraction &right) const{
     Fraction Result;
     Result.num = num * right.num;
     Result.den = den * right.den;
-    Result.Simplify();
+    Result.simplify();
     return Result;
 }
 
-Fraction Fraction::operator/(const Fraction& right) {
+Fraction Fraction::operator/(const Fraction& right) const{
     Fraction Result;
     Result.num = num * right.den;
     Result.den = den * right.num;
-    Result.Simplify();
+    Result.simplify();
     return Result;
 }
 
-Fraction& Fraction::operator=(const Fraction& right) {
+Fraction& Fraction::operator=(const Fraction& right){
     num = right.num;
     den = right.den;
     return *this;
 }
 
-bool Fraction::operator>(const Fraction &right) {
+bool Fraction::operator>(const Fraction &right) const{
     bool isMajor = false;
     if ((double)num/den > (double)right.num/right.den){
         isMajor = true;
@@ -188,7 +170,7 @@ bool Fraction::operator>(const Fraction &right) {
     return isMajor;
 }
 
-bool Fraction::operator>=(const Fraction &right) {
+bool Fraction::operator>=(const Fraction &right) const{
     bool isMajor = false;
     if ((double)num/den >= (double)right.num/right.den){
         isMajor = true;
@@ -196,7 +178,7 @@ bool Fraction::operator>=(const Fraction &right) {
     return isMajor;
 }
 
-bool Fraction::operator<(const Fraction &right) {
+bool Fraction::operator<(const Fraction &right) const{
     bool isMinor = false;
     if ((double)num/den < (double)right.num/right.den){
         isMinor = true;
@@ -204,7 +186,7 @@ bool Fraction::operator<(const Fraction &right) {
     return isMinor;
 }
 
-bool Fraction::operator<=(const Fraction &right) {
+bool Fraction::operator<=(const Fraction &right) const{
     bool isMinor = false;
     if ((double)num/den <= (double)right.num/right.den){
         isMinor = true;
@@ -212,32 +194,32 @@ bool Fraction::operator<=(const Fraction &right) {
     return isMinor;
 }
 
-bool Fraction::operator==(const double& right) {
+bool Fraction::operator==(const double& right) const{
     double fraction;
-    fraction = (float)num/den;
+    fraction = (float)num/(float)den;
     if(fraction == right)
         return true;
     else
         return false;
 }
 
-bool Fraction::operator!=(const double& right) {
+bool Fraction::operator!=(const double& right) const{
     double fraction;
-    fraction = (float)num/den;
+    fraction = (float)num/(float)den;
     if(fraction != right)
         return true;
     else
         return false;
 }
 
-Fraction Fraction::abs(const Fraction& input) {
+Fraction Fraction::abs(const Fraction& input) const{
     Fraction output;
     output.num = std::abs(num);
     output.den = std::abs(den);
     return output;
 }
 
-void Fraction::MakeFraction(std::string input) {
+void Fraction::makeFraction(std::string input) {
     std::string s_num;
     std::string s_den;
     bool dot_found = false;
@@ -261,6 +243,6 @@ void Fraction::MakeFraction(std::string input) {
         }
         num = std::stoi(s_num);
         den = std::stoi(s_den);
-        Simplify();
+        simplify();
     }
 }

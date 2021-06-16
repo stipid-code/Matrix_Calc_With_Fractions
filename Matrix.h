@@ -25,7 +25,7 @@ public:
         for (int i=0; i<row_number; i++){
             for (int j=0; j<col_number; j++){
                 std::cout << "Insert [" << i << "][" << j << "]" << "\t";
-                input.Input();
+                input.input();
                 values[i*col_number+j] = input;
             }
         }
@@ -62,39 +62,41 @@ public:
         return false;
     }
 
-    virtual void Print(); // Prints the matrix
+    virtual void print() const; // Prints the matrix
 
-    Matrix operator+(const Matrix& right);
-    Matrix operator-(const Matrix& right);
-    Matrix operator*(const Matrix& right);
+    Matrix operator+(const Matrix& right) const;
+    Matrix operator-(const Matrix& right) const;
+    Matrix operator*(const Matrix& right) const;
     Matrix& operator=(const Matrix& right); // Shallow copy
 
     Fraction abs(int pos); // Returns the absolute of a value of the matrix
 
     bool isUpperTriangular(); // Checks if the matrix is upper triangular
 
-    virtual bool Gauss(); // Applies the Gauss elimination method on the matrix
-    virtual void Transpose(); // Rows become columns and columns become rows
-    virtual bool SwapRows(int row1, int row2);
-    bool SwapColumns(int col1, int col2);
-    virtual bool PartialPivoting(int firstRow, int firstCol); // optimizes the matrix for Gauss application
-    virtual bool GaussPP(); // Gauss elimination method with Partial Pivoting
-    bool CraftIdentity(); // Makes a square matrix an identity
-    bool Inversion(); // Inverts the matrix
-    bool Determinant(Fraction& det);
+    virtual bool gauss(); // Applies the gauss elimination method on the matrix
+    virtual void transpose(); // Rows become columns and columns become rows
+    virtual bool swapRows(int row1, int row2);
+    bool swapColumns(int col1, int col2);
+    virtual bool partialPivoting(int firstRow, int firstCol); // optimizes the matrix for gauss application
+    virtual bool gaussPP(); // gauss elimination method with Partial Pivoting
+    bool craftIdentity(); // Makes a square matrix an identity
+    bool inversion(); // Inverts the matrix
+    bool determinant(Fraction& det) const;
 
-    void Extract_Diag(); // Deletes all values except the ones on the diagonal
-    void Delete_Diag(); // Deletes the values on the diagonal
-    void Extract_Upper(); // Deletes all the values below the diagonal
-    void Extract_Lower(); // Deletes all the values above the diagonal
+    void extractDiag(); // Deletes all values except the ones on the diagonal
+    void deleteDiag(); // Deletes the values on the diagonal
+    void extractUpper(); // Deletes all the values below the diagonal
+    void extractLower(); // Deletes all the values above the diagonal
 
-    bool RowMax(int row, Fraction& result); // Returns the maximum value of a given row
-    bool ColMax(int col, Fraction& result); // Returns the maximum value of a given column
-    bool AbsRowSum(int row, Fraction& result); // Returns the sum of the absolute of values in selected row
-    bool AbsColSum(int col, Fraction& result); // Returns the sum of the absolute of values in selected column
+    bool rowMax(int row, Fraction& result) const; // Returns the maximum value of a given row
+    bool colMax(int col, Fraction& result) const; // Returns the maximum value of a given column
+    bool absRowSum(int row, Fraction& result); // Returns the sum of the absolute of values in selected row
+    bool absColSum(int col, Fraction& result); // Returns the sum of the absolute of values in selected column
 
-    Fraction Norm1();
-    Fraction NormInf();
+    Fraction norm1();
+    Fraction normInf();
+    Fraction condNorm1() const; // condition index using norm 1
+    Fraction condNormInf() const; // condition index using infinite norm
 
 protected:
     int n_col;
@@ -114,7 +116,7 @@ public:
         std::cout << "Insert known terms: \n";
         for (int i = 0; i < row_number; i++) {
             std::cout << "Insert b[" << i + 1 << "]:\t";
-            input.Input();
+            input.input();
             b[i] = input;
         }
     }
@@ -128,12 +130,12 @@ public:
         delete[] b;
     }
 
-    void Print() override;
-    bool Gauss() override;
-    bool SwapRows(int row1, int row2) override;
-    bool PartialPivoting(int firstRow, int firstCol) override;
-    bool GaussPP() override;
-    bool Back_Substitution(); // Prints the solutions of an upper triangular matrix
+    void print() const override;
+    bool gauss() override;
+    bool swapRows(int row1, int row2) override;
+    bool partialPivoting(int firstRow, int firstCol) override;
+    bool gaussPP() override;
+    bool backSubstitution(); // Prints the solutions of an upper triangular matrix
 
 protected:
     Fraction* b = new Fraction[n_row];

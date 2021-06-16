@@ -1,6 +1,4 @@
 #include <iostream>
-#include <sstream>
-
 #include "Matrix.h"
 
 int main() {
@@ -27,62 +25,68 @@ int main() {
         Matrix C(A);
         Matrix D(A);
         Matrix E(A);
-        A.Print();
+        Matrix F(A);
+        A.print();
         Fraction det;
         std::cout << "\n\n";
         std::cout << "Norm 1 is: ";
-        A.Norm1().Print();
+        A.norm1().print();
         std::cout << "\n";
         std::cout << "Infinite norm is: ";
-        A.NormInf().Print();
+        A.normInf().print();
         std::cout << "\n";
-        if (E.Determinant(det)){
+        if (E.determinant(det)){
             std::cout << "Determinant: ";
-            det.Print();
+            det.print();
         } else std::cout << "NO DETERMINANT!\n";
+        std::cout << "\nNorm 1 condition index: ";
+        std::cout << F.condNorm1().floatify();
+        std::cout << "\n";
+        std::cout << "Infinite norm condition index: ";
+        std::cout << F.condNormInf().floatify();
         std::cout << "\n";
         std::cout << "\nGauss:";
-        if (A.Gauss()) {
-            A.Print();
+        if (A.gauss()) {
+            A.print();
             std::cout << "\n";
         } else std::cout << "\tNOT APPLICABLE!\n";
         std::cout << "\nGauss with Partial Pivoting:";
-        if (B.GaussPP()) {
-            B.Print();
+        if (B.gaussPP()) {
+            B.print();
             std::cout << "\n";
         } else std::cout << "NOT APPLICABLE!\n";
         std::cout << "\nTransposed matrix:";
-        C.Transpose();
-        C.Print();
+        C.transpose();
+        C.print();
         std::cout << "\n";
-        if (D.Inversion()) {
+        if (D.inversion()) {
             std::cout << "\nInverted matrix:";
-            D.Print();
+            D.print();
             std::cout << "\n";
         } else std::cout << "\nNOT INVERTIBLE!\n";
     }
     else {
         fullMatrix A(nr, nc);
         fullMatrix B(A);
-        A.Print();
+        A.print();
         std::cout << "\n\n";
         std::cout << "Norm 1 is: ";
-        A.Norm1().Print();
+        A.norm1().print();
         std::cout << "\n";
         std::cout << "Infinite norm is: ";
-        A.NormInf().Print();
+        A.normInf().print();
         std::cout << "\n";
         std::cout << "\nGauss:";
-        if (A.Gauss()) {
-            A.Print();
+        if (A.gauss()) {
+            A.print();
             std::cout << "\nSolutions:\n";
-            A.Back_Substitution();
+            A.backSubstitution();
         } else std::cout << "\tNOT APPLICABLE!\n";
         std::cout << "\nGauss with Partial Pivoting:";
-        if (B.GaussPP()) {
-            B.Print();
+        if (B.gaussPP()) {
+            B.print();
             std::cout << "\nSolutions:\n";
-            B.Back_Substitution();
+            B.backSubstitution();
         } else std::cout << "NOT APPLICABLE!\n";
     }
 

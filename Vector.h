@@ -27,12 +27,12 @@ public:
         size = x;
         for (int i=0; i<size; i++){
             std::cout << "Insert " << i << "value:\t";
-            values[i].Input();
+            values[i].input();
         }
         std::cout << std::endl;
     };
 
-    bool isLegalValue(int pos){
+    bool isLegalValue(int pos) const{
         if (pos >= 0 && pos < size)
             return true;
         return false;
@@ -58,7 +58,7 @@ public:
 
     Fraction findMax();
 
-    void Print();
+    void print();
 
 protected:
     int size;
