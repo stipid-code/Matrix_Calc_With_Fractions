@@ -13,6 +13,12 @@ public:
 
     explicit Vector(int size) : size(size){};
 
+    explicit Vector(int size, Fraction value) : size(size){
+        for (int i=0; i<size; i++){
+            values[i] = value;
+        }
+    };
+
     explicit Vector(Fraction const V[], int size) : size(size){
         for (int i=0; i<size; i++){
             values[i] = V[i];
@@ -38,7 +44,7 @@ public:
         return false;
     }
 
-    bool getValue(int pos, Fraction& value){
+    bool getValue(int pos, Fraction& value) const{
         if (isLegalValue(pos)) {
             value = values[pos];
             return true;
@@ -56,7 +62,7 @@ public:
         return false;
     }
 
-    Fraction findMax();
+    Fraction findMax() const;
 
     void print();
 

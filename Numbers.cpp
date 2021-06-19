@@ -214,8 +214,12 @@ bool Fraction::operator!=(const double& right) const{
 
 Fraction Fraction::abs(const Fraction& input) const{
     Fraction output;
-    output.num = std::abs(num);
-    output.den = std::abs(den);
+    if (num<0) {
+        output.num = -num;
+    }
+    if (den<0) {
+        output.den = -den;
+    }
     return output;
 }
 

@@ -11,7 +11,7 @@ void Vector::print(){
     std::cout << std::endl;
 }
 
-Fraction Vector::findMax() {
+Fraction Vector::findMax() const{
     Fraction max = values[0];
     for (int i=1; i<size; i++) {
         if (values[i] > max)

@@ -69,9 +69,9 @@ public:
     Matrix operator*(const Matrix& right) const;
     Matrix& operator=(const Matrix& right); // Shallow copy
 
-    Fraction abs(int pos); // Returns the absolute of a value of the matrix
+    Fraction abs(int pos) const; // Returns the absolute of a value of the matrix
 
-    bool isUpperTriangular(); // Checks if the matrix is upper triangular
+    bool isUpperTriangular() const; // Checks if the matrix is upper triangular
 
     virtual bool gauss(); // Applies the gauss elimination method on the matrix
     virtual void transpose(); // Rows become columns and columns become rows
@@ -90,11 +90,11 @@ public:
 
     bool rowMax(int row, Fraction& result) const; // Returns the maximum value of a given row
     bool colMax(int col, Fraction& result) const; // Returns the maximum value of a given column
-    bool absRowSum(int row, Fraction& result); // Returns the sum of the absolute of values in selected row
-    bool absColSum(int col, Fraction& result); // Returns the sum of the absolute of values in selected column
+    bool absRowSum(int row, Fraction& result) const; // Returns the sum of the absolute of values in selected row
+    bool absColSum(int col, Fraction& result) const; // Returns the sum of the absolute of values in selected column
 
-    Fraction norm1();
-    Fraction normInf();
+    Fraction norm1() const;
+    Fraction normInf() const;
     Fraction condNorm1() const; // condition index using norm 1
     Fraction condNormInf() const; // condition index using infinite norm
 
@@ -104,14 +104,14 @@ protected:
     Fraction* values = new Fraction[n_col*n_row];
 };
 
-class fullMatrix : public Matrix {
+class completeMatrix : public Matrix {
 public:
-    fullMatrix(Fraction const V[], int row_number, int col_number, Fraction const bi[]) : Matrix(V, row_number, col_number) {
+    completeMatrix(Fraction const V[], int row_number, int col_number, Fraction const bi[]) : Matrix(V, row_number, col_number) {
         for (int i=0; i<row_number; i++)
             b[i] = bi[i];
     }
 
-    fullMatrix(int row_number, int col_number) : Matrix(row_number, col_number){
+    completeMatrix(int row_number, int col_number) : Matrix(row_number, col_number){
         Fraction input;
         std::cout << "Insert known terms: \n";
         for (int i = 0; i < row_number; i++) {
@@ -121,12 +121,12 @@ public:
         }
     }
 
-    fullMatrix(fullMatrix& that) : Matrix(that) {
+    completeMatrix(completeMatrix& that) : Matrix(that) {
         for (int i = 0; i < n_row; i++)
             b[i] = that.b[i];
     }
 
-    ~fullMatrix() override{
+    ~completeMatrix() override{
         delete[] b;
     }
 

@@ -66,8 +66,8 @@ int main() {
         } else std::cout << "\nNOT INVERTIBLE!\n";
     }
     else {
-        fullMatrix A(nr, nc);
-        fullMatrix B(A);
+        completeMatrix A(nr, nc);
+        completeMatrix B(A);
         A.print();
         std::cout << "\n\n";
         std::cout << "Norm 1 is: ";

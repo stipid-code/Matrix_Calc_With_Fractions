@@ -58,14 +58,14 @@ Matrix& Matrix::operator=(const Matrix& right) {
     return *this;
 }
 
-Fraction Matrix::abs(int pos) {
+Fraction Matrix::abs(int pos) const {
     Fraction Result;
     Result.num = std::abs(values[pos].num);
     Result.den = std::abs(values[pos].den);
     return Result;
 }
 
-bool Matrix::isUpperTriangular() {
+bool Matrix::isUpperTriangular() const{
     bool result = false;
     if (n_col == n_row) {
         if (values[0] == 0) // If first value is 0, it cannot be upper triangular!
@@ -350,7 +350,7 @@ bool Matrix::colMax(int col, Fraction& result) const{
     return false;
 }
 
-bool Matrix::absRowSum(int row, Fraction& result){
+bool Matrix::absRowSum(int row, Fraction& result) const{
     if(isRow(row)) {
         Fraction sum(0, 1);
         for (int i = 0; i < n_col; i++)
@@ -362,7 +362,7 @@ bool Matrix::absRowSum(int row, Fraction& result){
     return false;
 }
 
-bool Matrix::absColSum(int col, Fraction& result){
+bool Matrix::absColSum(int col, Fraction& result) const{
     if (isCol(col)) {
         Fraction sum(0, 1);
         for (int i = 0; i < n_row; i++)
@@ -374,7 +374,7 @@ bool Matrix::absColSum(int col, Fraction& result){
     return false;
 }
 
-Fraction Matrix::norm1(){
+Fraction Matrix::norm1() const{
     Vector V_Sum(n_col);
     Fraction x;
     for (int i=0; i<n_col; i++){
@@ -384,7 +384,7 @@ Fraction Matrix::norm1(){
     return V_Sum.findMax();
 }
 
-Fraction Matrix::normInf(){
+Fraction Matrix::normInf() const{
     Vector V_Sum(n_row);
     Fraction x;
     for (int i=0; i<n_row; i++){
@@ -410,7 +410,7 @@ Fraction Matrix::condNormInf() const{
 
 // ................ FULL MATRIX: ................
 
-void fullMatrix::print() const{
+void completeMatrix::print() const{
     for (int i=0; i<(n_row); i++){
         std::cout << "\n";
         for (int j=0; j<n_col; j++) {
@@ -422,7 +422,7 @@ void fullMatrix::print() const{
     }
 }
 
-bool fullMatrix::gauss() {
+bool completeMatrix::gauss() {
     Fraction m;
     bool no_error = true;
     for (int i = 0; i < (n_row-1) && no_error; i++){
@@ -443,7 +443,7 @@ bool fullMatrix::gauss() {
     return no_error;
 }
 
-bool fullMatrix::gaussPP() {
+bool completeMatrix::gaussPP() {
     Fraction m;
     bool no_error = true;
     for (int i = 0; i < (n_row - 1) && no_error; i++) {
@@ -464,7 +464,7 @@ bool fullMatrix::gaussPP() {
     return no_error;
 }
 
-bool fullMatrix::swapRows(int row1, int row2) {
+bool completeMatrix::swapRows(int row1, int row2) {
     if (isRow(row1) && isRow(row2)) {
         Fraction aux;
         for (int i = 0; i < n_col; i++) {
@@ -482,7 +482,7 @@ bool fullMatrix::swapRows(int row1, int row2) {
     }
 }
 
-bool fullMatrix::partialPivoting(int firstRow, int firstCol) {
+bool completeMatrix::partialPivoting(int firstRow, int firstCol) {
     Fraction max;
     int rowmax = firstRow;
     bool no_error = true;
@@ -503,7 +503,7 @@ bool fullMatrix::partialPivoting(int firstRow, int firstCol) {
     return no_error;
 }
 
-bool fullMatrix::backSubstitution() {
+bool completeMatrix::backSubstitution() {
     bool no_error = true;
     Fraction* x = new Fraction[n_row];
     if (isUpperTriangular()) {

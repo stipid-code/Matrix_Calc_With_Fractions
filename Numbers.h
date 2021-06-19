@@ -12,7 +12,7 @@
 #include <sstream>
 
 template <typename T>
-void roundZero(T& a, T& epsilon) { // if the T number is too near to 0, a becomes 0
+void roundZero(T& a, T& epsilon){ // if the T number is too near to 0, a becomes 0
     if (fabs(a)<epsilon)
         a = 0;
 }
