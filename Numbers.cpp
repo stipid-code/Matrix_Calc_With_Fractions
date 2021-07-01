@@ -212,14 +212,16 @@ bool Fraction::operator!=(const double& right) const{
         return false;
 }
 
-Fraction Fraction::abs(const Fraction& input) const{
+Fraction Fraction::abs() const{
     Fraction output;
     if (num<0) {
         output.num = -num;
     }
+    else output.num = num;
     if (den<0) {
         output.den = -den;
     }
+    else output.den = den;
     return output;
 }
 

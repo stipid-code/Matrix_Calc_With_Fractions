@@ -49,7 +49,7 @@ public:
     bool operator==(const double& right) const;
     bool operator!=(const double& right) const;
 
-    Fraction abs(const Fraction& input) const;
+    Fraction abs() const;
 
     void simplify();
     void input();

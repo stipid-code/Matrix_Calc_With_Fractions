@@ -489,7 +489,7 @@ bool completeMatrix::partialPivoting(int firstRow, int firstCol) {
     if (isRow(firstRow) && isCol(firstCol)) {
         max = values[firstRow * n_col + firstCol];
         for (int i = firstRow + 1; i < n_row; i++) {
-            if (values[i * n_col + firstCol] > max) {
+            if (values[i * n_col + firstCol].abs() > max.abs()) {
                 max = values[i * n_col + firstCol];
                 rowmax = i;
             }
