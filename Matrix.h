@@ -63,11 +63,13 @@ public:
     }
 
     virtual void print() const; // Prints the matrix
+    void insertValue(unsigned short int position, Fraction* F); // inserts a value at a given position
 
     Matrix operator+(const Matrix& right) const;
     Matrix operator-(const Matrix& right) const;
     Matrix operator*(const Matrix& right) const;
     Matrix& operator=(const Matrix& right); // Shallow copy
+    bool operator==(const Matrix& right);
 
     Fraction abs(int pos) const; // Returns the absolute of a value of the matrix
 
@@ -104,14 +106,14 @@ protected:
     Fraction* values = new Fraction[n_col*n_row];
 };
 
-class augmentedMatrix : public Matrix {
+class AugmentedMatrix : public Matrix {
 public:
-    augmentedMatrix(Fraction const V[], int row_number, int col_number, Fraction const bi[]) : Matrix(V, row_number, col_number) {
+    AugmentedMatrix(Fraction const V[], int row_number, int col_number, Fraction const bi[]) : Matrix(V, row_number, col_number) {
         for (int i=0; i<row_number; i++)
             b[i] = bi[i];
     }
 
-    augmentedMatrix(int row_number, int col_number) : Matrix(row_number, col_number){
+    AugmentedMatrix(int row_number, int col_number) : Matrix(row_number, col_number){
         Fraction input;
         std::cout << "Insert known terms: \n";
         for (int i = 0; i < row_number; i++) {
@@ -121,14 +123,26 @@ public:
         }
     }
 
-    augmentedMatrix(augmentedMatrix& that) : Matrix(that) {
+    AugmentedMatrix(int row_number, int col_number, int init_number) : Matrix(row_number, col_number, init_number){
+        std::cout << "Insert known terms: \n";
+        for (int i = 0; i < row_number; i++) {
+            Fraction F(init_number, 1);
+            b[i] = F;
+        }
+    }
+
+    AugmentedMatrix(AugmentedMatrix& that) : Matrix(that) {
         for (int i = 0; i < n_row; i++)
             b[i] = that.b[i];
     }
 
-    ~augmentedMatrix() override{
+    ~AugmentedMatrix() override{
         delete[] b;
     }
+
+    void insertKnownTerm(unsigned short int position, Fraction* F) const; // inserts a value at a given position
+
+    bool operator==(const AugmentedMatrix& right);
 
     void print() const override;
     bool gauss() override;

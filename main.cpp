@@ -66,8 +66,8 @@ int main() {
         } else std::cout << "\nNOT INVERTIBLE!\n";
     }
     else {
-        augmentedMatrix A(nr, nc);
-        augmentedMatrix B(A);
+        AugmentedMatrix A(nr, nc);
+        AugmentedMatrix B(A);
         A.print();
         std::cout << "\n\n";
         std::cout << "Norm 1 is: ";
@@ -75,6 +75,12 @@ int main() {
         std::cout << "\n";
         std::cout << "Infinite norm is: ";
         A.normInf().print();
+        std::cout << "\n";
+        std::cout << "Conditioning index (norm 1): ";
+        A.condNorm1().print();
+        std::cout << "\n";
+        std::cout << "Conditioning index (norm infinite): ";
+        A.condNormInf().print();
         std::cout << "\n";
         std::cout << "\nGauss:";
         if (A.gauss()) {

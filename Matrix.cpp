@@ -58,6 +58,15 @@ Matrix& Matrix::operator=(const Matrix& right) {
     return *this;
 }
 
+bool Matrix::operator==(const Matrix &right) {
+    for (int i=0; i<n_row; i++){
+        for (int j=0; j<n_col; j++)
+            if ((values[i*n_col+j].num != right.values[i*n_col+j].num) || (values[i*n_col+j].den != right.values[i*n_col+j].den))
+                return false;
+    }
+    return true;
+}
+
 Fraction Matrix::abs(int pos) const {
     Fraction Result;
     Result.num = std::abs(values[pos].num);
@@ -408,9 +417,14 @@ Fraction Matrix::condNormInf() const{
     return X.normInf() * Inv.normInf();
 }
 
-// ................ FULL MATRIX: ................
+void Matrix::insertValue(unsigned short int position, Fraction* F) {
+    values[position] = *F;
+    values[position].simplify();
+}
 
-void augmentedMatrix::print() const{
+// ................ AUGMENTED MATRIX: ................
+
+void AugmentedMatrix::print() const{
     for (int i=0; i<(n_row); i++){
         std::cout << "\n";
         for (int j=0; j<n_col; j++) {
@@ -422,7 +436,7 @@ void augmentedMatrix::print() const{
     }
 }
 
-bool augmentedMatrix::gauss() {
+bool AugmentedMatrix::gauss() {
     Fraction m;
     bool no_error = true;
     for (int i = 0; i < (n_row-1) && no_error; i++){
@@ -443,7 +457,7 @@ bool augmentedMatrix::gauss() {
     return no_error;
 }
 
-bool augmentedMatrix::gaussPP() {
+bool AugmentedMatrix::gaussPP() {
     Fraction m;
     bool no_error = true;
     for (int i = 0; i < (n_row - 1) && no_error; i++) {
@@ -464,7 +478,7 @@ bool augmentedMatrix::gaussPP() {
     return no_error;
 }
 
-bool augmentedMatrix::swapRows(int row1, int row2) {
+bool AugmentedMatrix::swapRows(int row1, int row2) {
     if (isRow(row1) && isRow(row2)) {
         Fraction aux;
         for (int i = 0; i < n_col; i++) {
@@ -482,7 +496,7 @@ bool augmentedMatrix::swapRows(int row1, int row2) {
     }
 }
 
-bool augmentedMatrix::partialPivoting(int firstRow, int firstCol) {
+bool AugmentedMatrix::partialPivoting(int firstRow, int firstCol) {
     Fraction max;
     int rowmax = firstRow;
     bool no_error = true;
@@ -503,7 +517,7 @@ bool augmentedMatrix::partialPivoting(int firstRow, int firstCol) {
     return no_error;
 }
 
-bool augmentedMatrix::backSubstitution() {
+bool AugmentedMatrix::backSubstitution() {
     bool no_error = true;
     Fraction* x = new Fraction[n_row];
     if (isUpperTriangular()) {
@@ -536,4 +550,22 @@ bool augmentedMatrix::backSubstitution() {
     else std::cout << "\nERROR: No solutions!\n" << std::endl;
 
     return no_error;
+}
+
+void AugmentedMatrix::insertKnownTerm(unsigned short int position, Fraction* F) const {
+    b[position] = *F;
+    b[position].simplify();
+}
+
+bool AugmentedMatrix::operator==(const AugmentedMatrix &right) {
+    for (int i=0; i<n_row; i++){
+        for (int j=0; j<n_col; j++)
+            if ((values[i*n_col+j].num != right.values[i*n_col+j].num) || (values[i*n_col+j].den != right.values[i*n_col+j].den))
+                return false;
+    }
+    for (int i=0; i<n_row; i++){
+        if ((b[i].num != right.b[i].num) || (b[i].den != right.b[i].den))
+            return false;
+    }
+    return true;
 }

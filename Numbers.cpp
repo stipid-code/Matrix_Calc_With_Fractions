@@ -6,6 +6,13 @@
 #include <iostream>
 
 void Fraction::simplify() {
+
+    //checks if den < 0, in that case it puts '-' before num instead of den
+    if (den < 0) {
+        num = -num;
+        den = -den;
+    }
+
     if (num != 0 && den % num == 0){
         den = den/num;
         num = 1;
