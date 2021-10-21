@@ -410,7 +410,7 @@ Fraction Matrix::condNormInf() const{
 
 // ................ FULL MATRIX: ................
 
-void completeMatrix::print() const{
+void augmentedMatrix::print() const{
     for (int i=0; i<(n_row); i++){
         std::cout << "\n";
         for (int j=0; j<n_col; j++) {
@@ -422,7 +422,7 @@ void completeMatrix::print() const{
     }
 }
 
-bool completeMatrix::gauss() {
+bool augmentedMatrix::gauss() {
     Fraction m;
     bool no_error = true;
     for (int i = 0; i < (n_row-1) && no_error; i++){
@@ -443,7 +443,7 @@ bool completeMatrix::gauss() {
     return no_error;
 }
 
-bool completeMatrix::gaussPP() {
+bool augmentedMatrix::gaussPP() {
     Fraction m;
     bool no_error = true;
     for (int i = 0; i < (n_row - 1) && no_error; i++) {
@@ -464,7 +464,7 @@ bool completeMatrix::gaussPP() {
     return no_error;
 }
 
-bool completeMatrix::swapRows(int row1, int row2) {
+bool augmentedMatrix::swapRows(int row1, int row2) {
     if (isRow(row1) && isRow(row2)) {
         Fraction aux;
         for (int i = 0; i < n_col; i++) {
@@ -482,7 +482,7 @@ bool completeMatrix::swapRows(int row1, int row2) {
     }
 }
 
-bool completeMatrix::partialPivoting(int firstRow, int firstCol) {
+bool augmentedMatrix::partialPivoting(int firstRow, int firstCol) {
     Fraction max;
     int rowmax = firstRow;
     bool no_error = true;
@@ -503,7 +503,7 @@ bool completeMatrix::partialPivoting(int firstRow, int firstCol) {
     return no_error;
 }
 
-bool completeMatrix::backSubstitution() {
+bool augmentedMatrix::backSubstitution() {
     bool no_error = true;
     Fraction* x = new Fraction[n_row];
     if (isUpperTriangular()) {

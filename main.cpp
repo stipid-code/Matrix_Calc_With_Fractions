@@ -15,7 +15,7 @@ int main() {
     } while (nc < 0);
 
     do {
-        std::cout << "Is it a full matrix? (y/n)\t";
+        std::cout << "Is it an augmented matrix? (y/n)\t";
         std::cin >> choice;
     } while (choice!='y' && choice!='n');
 
@@ -66,8 +66,8 @@ int main() {
         } else std::cout << "\nNOT INVERTIBLE!\n";
     }
     else {
-        completeMatrix A(nr, nc);
-        completeMatrix B(A);
+        augmentedMatrix A(nr, nc);
+        augmentedMatrix B(A);
         A.print();
         std::cout << "\n\n";
         std::cout << "Norm 1 is: ";

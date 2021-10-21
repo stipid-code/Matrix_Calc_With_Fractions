@@ -104,14 +104,14 @@ protected:
     Fraction* values = new Fraction[n_col*n_row];
 };
 
-class completeMatrix : public Matrix {
+class augmentedMatrix : public Matrix {
 public:
-    completeMatrix(Fraction const V[], int row_number, int col_number, Fraction const bi[]) : Matrix(V, row_number, col_number) {
+    augmentedMatrix(Fraction const V[], int row_number, int col_number, Fraction const bi[]) : Matrix(V, row_number, col_number) {
         for (int i=0; i<row_number; i++)
             b[i] = bi[i];
     }
 
-    completeMatrix(int row_number, int col_number) : Matrix(row_number, col_number){
+    augmentedMatrix(int row_number, int col_number) : Matrix(row_number, col_number){
         Fraction input;
         std::cout << "Insert known terms: \n";
         for (int i = 0; i < row_number; i++) {
@@ -121,12 +121,12 @@ public:
         }
     }
 
-    completeMatrix(completeMatrix& that) : Matrix(that) {
+    augmentedMatrix(augmentedMatrix& that) : Matrix(that) {
         for (int i = 0; i < n_row; i++)
             b[i] = that.b[i];
     }
 
-    ~completeMatrix() override{
+    ~augmentedMatrix() override{
         delete[] b;
     }
 
