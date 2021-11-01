@@ -422,6 +422,70 @@ void Matrix::insertValue(unsigned short int position, Fraction* F) {
     values[position].simplify();
 }
 
+void Matrix::exportFile(std::string fileName) {
+    std::ofstream exportFile;
+    exportFile.open(fileName);
+    if (exportFile.is_open()) {
+        for (int i = 0; i < (n_row); i++) {
+            for (int j = 0; j < n_col; j++) {
+                exportFile << values[i * n_col + j].num << "/" << values[i * n_col + j].den;
+                if (j != n_col-1)
+                    exportFile << ",";
+            }
+            exportFile << ";";
+        }
+    } else std::cout << "Unable to create file named " << fileName;
+    exportFile.close();
+}
+
+bool Matrix::importFile(std::string fileName) {
+    char c;
+    std::string fraction;
+    std::list<std::string> fractions;
+    std::ifstream importFile;
+    importFile.open(fileName);
+    if (!importFile.is_open()) {
+        std::cerr << "Unable to read file named " << fileName;
+        return false;
+    }
+    unsigned short int rows = 0; // counts the number of rows
+    unsigned short int counter = 0; // counts the number of values
+    while (importFile.get(c)) {
+        if (c == ',' || c == ';') {
+            fractions.push_back(fraction);
+            fraction.clear();
+            counter++;
+            if (c == ';')
+                rows++;
+        } else
+            fraction.push_back(c);
+    }
+    this->setNewSize(rows, counter/rows); // resize matrix
+    counter = 0;
+    for (auto itr : fractions) {
+        this->insertValue(counter, itr);
+        counter++;
+    }
+    importFile.close();
+    return true;
+}
+
+void Matrix::insertValue(unsigned short position, std::string F) {
+    Fraction x;
+    x.stringToFraction(F);
+    values[position] = x;
+    values[position].simplify();
+}
+
+bool Matrix::setNewSize(unsigned short int const newRows, unsigned short int const newColumns) {
+    n_col = newColumns;
+    n_row = newRows;
+    delete[] values;
+    if (values = new Fraction[newRows*newColumns])
+        return true;
+    return false;
+}
+
 // ................ AUGMENTED MATRIX: ................
 
 void AugmentedMatrix::print() const{
@@ -568,4 +632,76 @@ bool AugmentedMatrix::operator==(const AugmentedMatrix &right) {
             return false;
     }
     return true;
+}
+
+void AugmentedMatrix::exportFile(std::string fileName) {
+    std::ofstream exportFile;
+    exportFile.open(fileName);
+    for (int i = 0; i < (n_row); i++) {
+        for (int j = 0; j < n_col; j++) {
+            exportFile << values[i * n_col + j].num << "/" << values[i * n_col + j].den;
+            if (j != n_col-1)
+                exportFile << ",";
+        }
+        exportFile << "|";
+        exportFile << b[i].num << "/" << b[i].den;
+        exportFile << ";";
+    }
+    exportFile.close();
+}
+
+bool AugmentedMatrix::importFile(std::string fileName) {
+    char c;
+    std::string fraction;
+    std::list<std::string> fractions;
+    std::ifstream importFile;
+    importFile.open(fileName);
+    if (!importFile.is_open()) {
+        std::cerr << "Unable to read file named " << fileName;
+        return false;
+    }
+    unsigned short int rows = 0; // counts the number of rows
+    unsigned short int counter = 0; // counts the number of values
+    while (importFile.get(c)) {
+        if (c == ',' || c == ';' || c == '|') {
+            fractions.push_back(fraction);
+            fraction.clear();
+            counter++;
+            if (c == ';')
+                rows++;
+        } else
+            fraction.push_back(c);
+    }
+    this->setNewSize(rows, (counter-rows)/rows); // (counter-rows) because it's necessary to delete known terms from the columns count
+    counter = 0;
+    unsigned short int knownTermsCounter = 0;
+    for (auto itr : fractions) {
+        if ((counter+knownTermsCounter) % (n_col+1) == n_col) { // checks if the current value is a known term or not (note that itr begins from 0)
+            this->insertKnownTerm(knownTermsCounter, itr);
+            knownTermsCounter++;
+        }
+        else {
+            this->insertValue(counter, itr);
+            counter++;
+        }
+    }
+    importFile.close();
+    return true;
+}
+
+void AugmentedMatrix::insertKnownTerm(unsigned short position, std::string F) const {
+    Fraction x;
+    x.stringToFraction(F);
+    b[position] = x;
+    b[position].simplify();
+}
+
+bool AugmentedMatrix::setNewSize(const unsigned short newRows, const unsigned short newColumns) {
+    n_col = newColumns;
+    n_row = newRows;
+    delete[] values;
+    if (values = new Fraction[newRows*newColumns])
+        if (b = new Fraction[newRows])
+            return true;
+    return false;
 }

@@ -6,6 +6,9 @@
 #define MATRIX_CALC_MATRIX_H
 
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <list>
 #include "Vector.h"
 #include "Numbers.h"
 
@@ -16,6 +19,15 @@ public:
             for (int j=0; j<col_number; j++){
                 values[i * col_number + j] = V[i * col_number + j];
             }
+        }
+    }
+
+    Matrix(std::list<Fraction> V, int row_number, int col_number) : n_col(col_number), n_row(row_number){
+        unsigned short int i = 0;
+        for (std::list<Fraction>::iterator itr = V.begin(); itr != V.end(); ++itr) {
+            values[i].num = itr->num;
+            values[i].den = itr->den;
+            i++;
         }
     }
 
@@ -64,6 +76,8 @@ public:
 
     virtual void print() const; // Prints the matrix
     void insertValue(unsigned short int position, Fraction* F); // inserts a value at a given position
+    void insertValue(unsigned short int position, std::string F);
+    virtual bool setNewSize(unsigned short int const newRows, unsigned short int const newColumns); // change size of the matrix
 
     Matrix operator+(const Matrix& right) const;
     Matrix operator-(const Matrix& right) const;
@@ -100,6 +114,9 @@ public:
     Fraction condNorm1() const; // condition index using norm 1
     Fraction condNormInf() const; // condition index using infinite norm
 
+    virtual void exportFile(std::string fileName); // exports a matrix on a file
+    virtual bool importFile(std::string fileName); // imports a matrix from a file
+
 protected:
     int n_col;
     int n_row;
@@ -124,7 +141,6 @@ public:
     }
 
     AugmentedMatrix(int row_number, int col_number, int init_number) : Matrix(row_number, col_number, init_number){
-        std::cout << "Insert known terms: \n";
         for (int i = 0; i < row_number; i++) {
             Fraction F(init_number, 1);
             b[i] = F;
@@ -141,6 +157,8 @@ public:
     }
 
     void insertKnownTerm(unsigned short int position, Fraction* F) const; // inserts a value at a given position
+    void insertKnownTerm(unsigned short int position, std::string F) const;
+    bool setNewSize(unsigned short int const newRows, unsigned short int const newColumns) override; // change size of the matrix
 
     bool operator==(const AugmentedMatrix& right);
 
@@ -150,6 +168,9 @@ public:
     bool partialPivoting(int firstRow, int firstCol) override;
     bool gaussPP() override;
     bool backSubstitution(); // Prints the solutions of an upper triangular matrix
+
+    void exportFile(std::string fileName) override; // exports matrix on a file
+    bool importFile(std::string fileName) override; // imports matrix from a file
 
 protected:
     Fraction* b = new Fraction[n_row];

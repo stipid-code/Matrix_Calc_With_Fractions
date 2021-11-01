@@ -55,6 +55,7 @@ public:
     void input();
     void print() const;
     float floatify() const;
+    void stringToFraction(std::string const input);
 
     void makeFraction(std::string input); // attempts to return a fraction given a double
 

@@ -38,6 +38,26 @@ TEST(Matrix, Norm1) {
     ASSERT_EQ(A.norm1().den, 3);
 }
 
+TEST(Matrix, ImportExportFile) {
+    bool check = false;
+    Matrix Check(3, 3, 1);
+    Matrix Test(3, 3, 1);
+    Check.insertValue(0, new Fraction(-12, 10));
+    Check.insertValue(1, new Fraction(1, 3));
+    Check.insertValue(2, new Fraction(-1, 6));
+    Check.insertValue(3, new Fraction(2, 1));
+    Check.insertValue(4, new Fraction(4, 1));
+    Check.insertValue(5, new Fraction(2, 1));
+    Check.insertValue(6, new Fraction(1, 1));
+    Check.insertValue(7, new Fraction(9, 1));
+    Check.insertValue(8, new Fraction(4, 1));
+    Check.exportFile("check.txt");
+    ASSERT_EQ(Test.importFile("check.txt"), true);
+    if (Test == Check)
+        check = true;
+    ASSERT_EQ(check, true);
+}
+
 TEST(AugmentedMatrix, NormInf) {
     AugmentedMatrix A(3,3,1);
     A.insertValue(0, new Fraction(-12,10));
@@ -146,4 +166,45 @@ TEST(AugmentedMatrix, PartialPivoting) {
     }
     ASSERT_EQ(check, true);
 
+}
+
+TEST(AugmentedMatrix, ImportExportFile) {
+    bool check = false;
+    AugmentedMatrix Check(6, 4, 1);
+    AugmentedMatrix Test(6, 4, 1);
+    Check.insertValue(0, new Fraction(-12, 10));
+    Check.insertValue(1, new Fraction(1, 3));
+    Check.insertValue(2, new Fraction(-1, 6));
+    Check.insertValue(3, new Fraction(2, 1));
+    Check.insertValue(4, new Fraction(4, 1));
+    Check.insertValue(5, new Fraction(2, 1));
+    Check.insertValue(6, new Fraction(1, 1));
+    Check.insertValue(7, new Fraction(9, 1));
+    Check.insertValue(8, new Fraction(4, 1));
+    Check.insertValue(9, new Fraction(6, 5));
+    Check.insertValue(10, new Fraction(-4, 1));
+    Check.insertValue(11, new Fraction(4, 1));
+    Check.insertValue(12, new Fraction(4, 1));
+    Check.insertValue(13, new Fraction(4, 1));
+    Check.insertValue(14, new Fraction(-12, 10));
+    Check.insertValue(15, new Fraction(1, 3));
+    Check.insertValue(16, new Fraction(-1, 6));
+    Check.insertValue(17, new Fraction(2, 1));
+    Check.insertValue(18, new Fraction(4, 1));
+    Check.insertValue(19, new Fraction(2, 1));
+    Check.insertValue(20, new Fraction(1, 1));
+    Check.insertValue(21, new Fraction(9, 1));
+    Check.insertValue(22, new Fraction(4, 1));
+    Check.insertValue(23, new Fraction(4, 1));
+    Check.insertKnownTerm(0,new Fraction(3,1));
+    Check.insertKnownTerm(1,new Fraction(24,1));
+    Check.insertKnownTerm(2,new Fraction(12,1));
+    Check.insertKnownTerm(3,new Fraction(3,1));
+    Check.insertKnownTerm(4,new Fraction(24,1));
+    Check.insertKnownTerm(5,new Fraction(12,1));
+    Check.exportFile("check.txt");
+    ASSERT_EQ(Test.importFile("check.txt"), true);
+    if (Test == Check)
+        check = true;
+    ASSERT_EQ(check, true);
 }

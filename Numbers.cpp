@@ -7,12 +7,6 @@
 
 void Fraction::simplify() {
 
-    //checks if den < 0, in that case it puts '-' before num instead of den
-    if (den < 0) {
-        num = -num;
-        den = -den;
-    }
-
     if (num != 0 && den % num == 0){
         den = den/num;
         num = 1;
@@ -57,6 +51,13 @@ void Fraction::simplify() {
             }
         } while (found == true);
     }
+
+    //checks if den < 0, in that case it puts '-' before num instead of den
+    if (den < 0) {
+        num = -num;
+        den = -den;
+    }
+
 }
 
 void Fraction::input() {
@@ -258,4 +259,45 @@ void Fraction::makeFraction(std::string input) {
         den = std::stoi(s_den);
         simplify();
     }
+}
+
+void Fraction::stringToFraction(std::string const input){
+    bool isFloat = false;
+    std::string first, second;
+    std::stringstream ss1, ss2;
+    int j = 0;
+    while (input[j] != '/' && j != input.length()){
+        j++;
+    }
+
+    if (j != input.length()) {
+        for (int i = 0; i < j; i++){
+            first += input[i];
+        }
+        for (int k = j+1; k < input.length(); k++){
+            if (input[k] != ' '){
+                second += input[k];
+            }
+        }
+        ss1 << second;
+        ss1 >> den;
+        ss2 << first;
+        ss2 >> num;
+    }
+    else {
+        for (int i = 0; i < input.length(); i++){
+            first += input[i];
+            if (isFloat == false && input[i] == '.')
+                isFloat = true;
+        }
+        if (isFloat) {
+            makeFraction(first);
+        }
+        else {
+            ss1 << first;
+            ss1 >> num;
+            den = 1;
+        }
+    }
+    simplify();
 }
