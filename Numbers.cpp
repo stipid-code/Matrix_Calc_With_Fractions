@@ -62,7 +62,7 @@ void Fraction::simplify() {
 
 void Fraction::input() {
     bool isFloat = false;
-    std::cout << "Insert num/den (int) or num (int or float): ";
+    std::cout << "Insert num/den (int) or num (int or float):";
     std::string input;
     std::string first, second;
     std::stringstream ss1, ss2;
@@ -218,6 +218,18 @@ bool Fraction::operator!=(const double& right) const{
         return true;
     else
         return false;
+}
+
+bool Fraction::operator==(const Fraction &right) const {
+    if (num == right.num && den == right.den)
+        return true;
+    return false;
+}
+
+bool Fraction::operator!=(const Fraction &right) const {
+    if (num != right.num || den != right.den)
+        return true;
+    return false;
 }
 
 Fraction Fraction::abs() const{

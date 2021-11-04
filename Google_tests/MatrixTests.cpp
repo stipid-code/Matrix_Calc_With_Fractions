@@ -58,6 +58,94 @@ TEST(Matrix, ImportExportFile) {
     ASSERT_EQ(check, true);
 }
 
+TEST(Matrix, Inversion) {
+    bool check = false;
+    Matrix A(3, 3, 1);
+    A.insertValue(0, new Fraction(-12, 10));
+    A.insertValue(1, new Fraction(1, 3));
+    A.insertValue(2, new Fraction(-1, 6));
+    A.insertValue(3, new Fraction(2, 1));
+    A.insertValue(4, new Fraction(4, 1));
+    A.insertValue(5, new Fraction(2, 1));
+    A.insertValue(6, new Fraction(1, 1));
+    A.insertValue(7, new Fraction(9, 1));
+    A.insertValue(8, new Fraction(4, 1));
+    Matrix Inv = A;
+    Inv.inversion();
+    Matrix Identity(3,3,0);
+    Identity.craftIdentity();
+    if (A*Inv == Identity)
+        check = true;
+    ASSERT_EQ(check, true);
+}
+
+TEST(Matrix, Determinant) {
+    bool check = false;
+    Matrix A(3, 3, 1);
+    A.insertValue(0, new Fraction(-12, 10));
+    A.insertValue(1, new Fraction(1, 3));
+    A.insertValue(2, new Fraction(-1, 6));
+    A.insertValue(3, new Fraction(2, 1));
+    A.insertValue(4, new Fraction(4, 1));
+    A.insertValue(5, new Fraction(2, 1));
+    A.insertValue(6, new Fraction(1, 1));
+    A.insertValue(7, new Fraction(9, 1));
+    A.insertValue(8, new Fraction(4, 1));
+    Fraction d;
+    Fraction correctDeterminant(-29, 15);
+    A.determinant(d);
+    if (d == correctDeterminant)
+        check = true;
+    ASSERT_EQ(check, true);
+
+    A.insertValue(0, new Fraction(-12, 10));
+    A.insertValue(1, new Fraction(1, 3));
+    A.insertValue(2, new Fraction(-1, 6));
+    A.insertValue(3, new Fraction(2, 1));
+    A.insertValue(4, new Fraction(13, 4));
+    A.insertValue(5, new Fraction(2, 1));
+    A.insertValue(6, new Fraction(1, 1));
+    A.insertValue(7, new Fraction(9, 1));
+    A.insertValue(8, new Fraction(-4, 6));
+    correctDeterminant.num = 8227;
+    correctDeterminant.den = 360;
+    A.determinant(d);
+    if (d == correctDeterminant)
+        check = true;
+    ASSERT_EQ(check, true);
+}
+
+TEST(Matrix, InsertValue) {
+    Matrix A(2,3,1);
+    ASSERT_EQ(A.insertValue(5, new Fraction(13, 4)), true);
+    ASSERT_EQ(A.insertValue(6, new Fraction(13, 4)), false); // invalid position
+}
+
+TEST(Matrix, Subtraction) {
+    bool check = false;
+    Matrix A(2,3,1);
+    A.insertValue(0, new Fraction(-12, 10));
+    A.insertValue(1, new Fraction(1, 3));
+    A.insertValue(2, new Fraction(-1, 6));
+    A.insertValue(3, new Fraction(2, 1));
+    A.insertValue(4, new Fraction(13, 4));
+    A.insertValue(5, new Fraction(2, 1));
+
+    Matrix B(2,3,1);
+    B.insertValue(0, new Fraction(-12, 10));
+    B.insertValue(1, new Fraction(1, 3));
+    B.insertValue(2, new Fraction(-1, 6));
+    B.insertValue(3, new Fraction(2, 1));
+    B.insertValue(4, new Fraction(13, 4));
+    B.insertValue(5, new Fraction(2, 1));
+
+    Matrix Zero(2,3,0);
+    Matrix Result = A - B;
+    if (Result == Zero)
+        check = true;
+    ASSERT_EQ(check,true);
+}
+
 TEST(AugmentedMatrix, NormInf) {
     AugmentedMatrix A(3,3,1);
     A.insertValue(0, new Fraction(-12,10));

@@ -36,7 +36,7 @@ public:
         Fraction input;
         for (int i=0; i<row_number; i++){
             for (int j=0; j<col_number; j++){
-                std::cout << "Insert [" << i << "][" << j << "]" << "\t";
+                std::cout << "Insert [" << i << "][" << j << "]\t";
                 input.input();
                 values[i*col_number+j] = input;
             }
@@ -62,21 +62,27 @@ public:
         delete[] values;
     }
 
-    bool isCol(int col) const{ //checks if it's a legal column
+    bool isCol(int const col) const{ //checks if it's a legal column
         if (col >= 0 && col < n_col)
             return true;
         return false;
     }
 
-    bool isRow(int row) const{ //checks if it's a legal row
+    bool isRow(int const row) const{ //checks if it's a legal row
         if (row >= 0 && row < n_row)
             return true;
         return false;
     }
 
+    bool isLegalPosition(int const position) const{ // checks if it's a legal absolute position
+        if (position < (n_col*n_row))
+            return true;
+        return false;
+    }
+
     virtual void print() const; // Prints the matrix
-    void insertValue(unsigned short int position, Fraction* F); // inserts a value at a given position
-    void insertValue(unsigned short int position, std::string F);
+    bool insertValue(unsigned short int position, Fraction* F); // inserts a value at a given position
+    bool insertValue(unsigned short int position, std::string F);
     virtual bool setNewSize(unsigned short int const newRows, unsigned short int const newColumns); // change size of the matrix
 
     Matrix operator+(const Matrix& right) const;

@@ -40,17 +40,17 @@ int main() {
 
         int nr, nc;
 
-        std::cout << "Insert number of rows: \t";
+        std::cout << "Insert number of rows:";
         do {
             std::cin >> nr;
         } while (nr < 0);
-        std::cout << "Insert number of columns (without considering known terms): \t";
+        std::cout << "Insert number of columns (without considering known terms):";
         do {
             std::cin >> nc;
         } while (nc < 0);
 
         do {
-            std::cout << "Is it an augmented matrix? (y/n)\t";
+            std::cout << "Is it an augmented matrix? (y/n)";
             std::cin >> choice;
         } while (choice != 'y' && choice != 'n');
 

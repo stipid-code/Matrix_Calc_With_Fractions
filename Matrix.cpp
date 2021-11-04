@@ -141,7 +141,7 @@ bool Matrix::swapRows(int row1, int row2) {
         return true;
     }
     else {
-        std::cout << "\nERROR: Illegal row detected for swap!\n";
+        std::cerr << "\nERROR: Illegal row detected for swap!\n";
         return false;
     }
 }
@@ -157,7 +157,7 @@ bool Matrix::swapColumns(int col1, int col2) {
         return true;
     }
     else {
-        std::cout << "\nERROR: Illegal column detected for swap!\n";
+        std::cerr << "\nERROR: Illegal column detected for swap!\n";
         return false;
     }
 }
@@ -221,7 +221,7 @@ bool Matrix::craftIdentity() {
     }
     else {
         no_error = false;
-        std::cout << "\nERROR: The identity matrix cannot be crafted with dimensions " << n_row << "x" << n_col << "!\n";
+        std::cerr << "\nERROR: The identity matrix cannot be crafted with dimensions " << n_row << "x" << n_col << "!\n";
     }
 
     return no_error;
@@ -341,7 +341,7 @@ bool Matrix::rowMax(int row, Fraction& result) const{
         result = max;
         return true;
     }
-    std::cout << "ERROR: Unable to return max, the inserted row doesn't exist!" << std::endl;
+    std::cerr << "ERROR: Unable to return max, the inserted row doesn't exist!" << std::endl;
     return false;
 }
 
@@ -355,7 +355,7 @@ bool Matrix::colMax(int col, Fraction& result) const{
         result = max;
         return true;
     }
-    std::cout << "ERROR: Unable to return max, the inserted column doesn't exist!" << std::endl;
+    std::cerr << "ERROR: Unable to return max, the inserted column doesn't exist!" << std::endl;
     return false;
 }
 
@@ -367,7 +367,7 @@ bool Matrix::absRowSum(int row, Fraction& result) const{
         result = sum;
         return true;
     }
-    std::cout << "ERROR: Unable to return sum, the inserted row doesn't exist!" << std::endl;
+    std::cerr << "ERROR: Unable to return sum, the inserted row doesn't exist!" << std::endl;
     return false;
 }
 
@@ -379,7 +379,7 @@ bool Matrix::absColSum(int col, Fraction& result) const{
         result = sum;
         return true;
     }
-    std::cout << "ERROR: Unable to return sum, the inserted column doesn't exist!" << std::endl;
+    std::cerr << "ERROR: Unable to return sum, the inserted column doesn't exist!" << std::endl;
     return false;
 }
 
@@ -417,9 +417,24 @@ Fraction Matrix::condNormInf() const{
     return X.normInf() * Inv.normInf();
 }
 
-void Matrix::insertValue(unsigned short int position, Fraction* F) {
-    values[position] = *F;
-    values[position].simplify();
+bool Matrix::insertValue(unsigned short int position, Fraction* F) {
+    if (this->isLegalPosition(position)) {
+        values[position] = *F;
+        values[position].simplify();
+        return true;
+    }
+    return false;
+}
+
+bool Matrix::insertValue(unsigned short position, std::string F) {
+    if (this->isLegalPosition(position)) {
+        Fraction x;
+        x.stringToFraction(F);
+        values[position] = x;
+        values[position].simplify();
+        return true;
+    }
+    return false;
 }
 
 void Matrix::exportFile(std::string fileName) {
@@ -434,7 +449,7 @@ void Matrix::exportFile(std::string fileName) {
             }
             exportFile << ";";
         }
-    } else std::cout << "Unable to create file named " << fileName;
+    } else std::cerr << "Unable to create file named " << fileName;
     exportFile.close();
 }
 
@@ -468,13 +483,6 @@ bool Matrix::importFile(std::string fileName) {
     }
     importFile.close();
     return true;
-}
-
-void Matrix::insertValue(unsigned short position, std::string F) {
-    Fraction x;
-    x.stringToFraction(F);
-    values[position] = x;
-    values[position].simplify();
 }
 
 bool Matrix::setNewSize(unsigned short int const newRows, unsigned short int const newColumns) {
@@ -555,7 +563,7 @@ bool AugmentedMatrix::swapRows(int row1, int row2) {
         b[row2] = aux;
         return true;
     } else {
-        std::cout << "\nERROR: Illegal row detected for swap!\n";
+        std::cerr << "\nERROR: Illegal row detected for swap!\n";
         return false;
     }
 }
@@ -609,9 +617,9 @@ bool AugmentedMatrix::backSubstitution() {
         }
     }
     else if (b[n_row - 1] == 0) {// if last known term is == 0 -> infinite solutions!
-        std::cout << "\nERROR: Infinite solutions!\n" << std::endl;
+        std::cerr << "\nERROR: Infinite solutions!\n" << std::endl;
     }
-    else std::cout << "\nERROR: No solutions!\n" << std::endl;
+    else std::cerr << "\nERROR: No solutions!\n" << std::endl;
 
     return no_error;
 }
