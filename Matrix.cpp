@@ -8,60 +8,67 @@ void Matrix::print() const {
     for (int i=0; i<n_row; i++){
         std::cout << "\n";
         for (int j=0; j<n_col; j++) {
-            values[i * n_col + j].print();
-            std::cout << "\t\t\t";
+            std::cout << values[i * n_col + j].toString() << "\t\t\t";
         }
     }
 }
 
 Matrix Matrix::operator+(const Matrix &right) const{
     Matrix Result(n_row, n_col, 0);
-    if (n_row == n_col && n_col == right.n_col && n_row == right.n_row) {
+    if (n_col == right.n_col && n_row == right.n_row) {
         for (int i = 0; i < n_row; i++)
             for (int j = 0; j < n_col; j++)
                 Result.values[i * n_col + j] = values[i * n_col + j] + right.values[i * n_col + j];
-    }
+    } else throw std::invalid_argument("Matrices with incompatible sizes for sum!");
     return Result;
 }
 
 Matrix Matrix::operator-(const Matrix &right) const{
     Matrix Result(n_row, n_col, 0);
-    if (n_row == n_col && n_col == right.n_col && n_row == right.n_row) {
+    if (n_col == right.n_col && n_row == right.n_row) {
         for (int i = 0; i < n_row; i++)
             for (int j = 0; j < n_col; j++)
                 Result.values[i * n_col + j] = values[i * n_col + j] - right.values[i * n_col + j];
-    }
+    } else throw std::invalid_argument("Matrices with incompatible sizes for subtraction!");
     return Result;
 }
 
 Matrix Matrix::operator*(const Matrix &right) const{
-    Matrix Result(n_row, n_col, 0);
-    if (n_row == n_col && n_col == right.n_col && n_row == right.n_row) {
+    Matrix Result(n_row, right.n_col, 0);
+    if (n_col == right.n_row) {
         for (int i = 0; i < n_row; i++) {
-            for (int k = 0; k < n_col; k++) {
+            for (int k = 0; k < right.n_col; k++) {
                 Fraction sum(0, 1);
                 for (int j = 0; j < n_col; j++) {
-                    sum = sum + (values[i * n_col + j] * right.values[j * n_col + k]);
+                    sum = sum + (values[i * n_col + j] * right.values[j * right.n_col + k]);
                 }
-                Result.values[i * n_col + k] = sum;
+                Result.values[i * right.n_col + k] = sum;
             }
         }
-    }
+    } else throw std::invalid_argument("Matrices with incompatible sizes for multiplication!");
     return Result;
 }
 
 Matrix& Matrix::operator=(const Matrix& right) {
-    for (int i=0; i<n_row; i++){
-        for (int j=0; j<n_col; j++)
-            values[i*n_col+j] = right.values[i*n_col+j];
+    if (this != &right) {
+        this->n_col = right.n_col;
+        this->n_row = right.n_row;
+        delete[] values;
+        values = new Fraction[n_col * n_row];
+        for (int i = 0; i < n_row; i++) {
+            for (int j = 0; j < n_col; j++)
+                values[i * n_col + j] = right.values[i * n_col + j];
+        }
     }
     return *this;
 }
 
 bool Matrix::operator==(const Matrix &right) {
+    if (n_col != right.n_col || n_row != right.n_row)
+        return false;
     for (int i=0; i<n_row; i++){
         for (int j=0; j<n_col; j++)
-            if ((values[i*n_col+j].num != right.values[i*n_col+j].num) || (values[i*n_col+j].den != right.values[i*n_col+j].den))
+            if ((values[i*n_col+j].getNum() != right.values[i*n_col+j].getNum()) || (values[i*n_col+j].getDen() != right.values[i*n_col+j].getDen()))
                 return false;
     }
     return true;
@@ -69,8 +76,8 @@ bool Matrix::operator==(const Matrix &right) {
 
 Fraction Matrix::abs(int pos) const {
     Fraction Result;
-    Result.num = std::abs(values[pos].num);
-    Result.den = std::abs(values[pos].den);
+    Result.setNum(std::abs(values[pos].getNum()));
+    Result.setDen(std::abs(values[pos].getDen()));
     return Result;
 }
 
@@ -95,11 +102,11 @@ bool Matrix::gauss() {
     bool no_error = true;
     Fraction m;
     for (int i = 0; i < (n_row-1) && no_error; i++){
-        if(values[i * n_col + i].num != 0){
+        if(values[i * n_col + i].getNum() != 0){
             for (int j = i+1; j < n_row; j++) {
                 m = values[j * n_col + i]/values[i * n_col + i];
-                values[j * n_col + i].num = 0;
-                values[j * n_col + i].den = 1;
+                values[j * n_col + i].setNum(0);
+                values[j * n_col + i].setDen(1);
                 for (int k = i+1; k < n_col; k++) {
                     values[j * n_col + k] = values[j * n_col + k] - m * values[i * n_col + k];
                 }
@@ -192,8 +199,8 @@ bool Matrix::gaussPP() {
         if(values[i * n_col + i] != 0){
             for (int j = i+1; j < n_row; j++) {
                 m = values[j * n_col + i]/values[i * n_col + i];
-                values[j * n_col + i].num = 0;
-                values[j * n_col + i].den = 1;
+                values[j * n_col + i].setNum(0);
+                values[j * n_col + i].setDen(1);
                 for (int k = i+1; k < n_col; k++) {
                     values[j * n_col + k] = values[j * n_col + k] - m * values[i * n_col + k];
                 }
@@ -205,26 +212,20 @@ bool Matrix::gaussPP() {
     return no_error;
 }
 
-bool Matrix::craftIdentity() {
-    bool no_error = true;
+void Matrix::makeIdentity() {
     if (n_col == n_row) {
         for (int i = 0; i < n_row; i++)
             for (int j = 0; j < n_col; j++)
                 if (i == j) {
-                    values[i * n_col + j].num = 1;
-                    values[i * n_col + j].den = 1;
+                    values[i * n_col + j].setNum(1);
+                    values[i * n_col + j].setDen(1);
                 }
                 else {
-                    values[i * n_col + j].num = 0;
-                    values[i * n_col + j].den = 1;
+                    values[i * n_col + j].setNum(0);
+                    values[i * n_col + j].setDen(1);
                 }
     }
-    else {
-        no_error = false;
-        std::cerr << "\nERROR: The identity matrix cannot be crafted with dimensions " << n_row << "x" << n_col << "!\n";
-    }
-
-    return no_error;
+    else throw std::invalid_argument("Invalid dimensions of the matrix to be made identity!");
 }
 
 bool Matrix::inversion() {
@@ -237,14 +238,14 @@ bool Matrix::inversion() {
         Fraction m;
         Matrix X(n_row, n_col, 0);
         Matrix I(n_row, n_col, 0);
-        I.craftIdentity();
+        I.makeIdentity();
 
         for (int i = 0; i < (n_row - 1) && no_error; i++) {
             if (values[i * n_col + i] != 0) {
                 for (int j = i + 1; j < n_row; j++) {
                     m = values[j * n_col + i] / values[i * n_col + i];
-                    values[j * n_col + i].num = 0;
-                    values[j * n_col + i].den = 1;
+                    values[j * n_col + i].setNum(0);
+                    values[j * n_col + i].setDen(1);
                     for (int k = i + 1; k < n_col; k++) { // this makes the matrix triangular
                         values[j * n_col + k] = values[j * n_col + k] - (m * values[i * n_col + k]);
                     }
@@ -285,7 +286,7 @@ bool Matrix::determinant(Fraction &det) const{
     if(aux.gaussPP()) {
         Fraction product;
         for (int i = 0; i < n_row && no_error == true; i++) {
-            if (aux.values[i * n_col + i].num != 0) {
+            if (aux.values[i * n_col + i].getNum() != 0) {
                 product = product * aux.values[i * n_col + i];
             } else no_error = false;
         }
@@ -298,16 +299,16 @@ void Matrix::extractDiag() {
     for (int i = 0; i < n_row; i++)
         for (int j = 0; j < n_row; j++) {
             if (i != j) {
-                values[i * n_col + j].num = 0;
-                values[i * n_col + j].den = 1;
+                values[i * n_col + j].setNum(1);
+                values[i * n_col + j].setDen(0);
             }
         }
 }
 
 void Matrix::deleteDiag() {
     for (int i = 0; i < n_row; i++) {
-        values[i * n_col + i].num = 0;
-        values[i * n_col + i].den = 1;
+        values[i * n_col + i].setNum(0);
+        values[i * n_col + i].setDen(1);
     }
 }
 
@@ -315,8 +316,8 @@ void Matrix::extractUpper(){
     for (int i = 0; i < n_row; i++)
         for (int j = 0; j < n_row; j++) {
             if (i > j) {
-                values[i * n_col + j].num = 0;
-                values[i * n_col + j].den = 1;
+                values[i * n_col + j].setNum(0);
+                values[i * n_col + j].setDen(1);
             }
         }
 }
@@ -325,8 +326,8 @@ void Matrix::extractLower(){
     for (int i = 0; i < n_row; i++)
         for (int j = 0; j < n_row; j++) {
             if (i < j) {
-                values[i * n_col + j].num = 0;
-                values[i * n_col + j].den = 1;
+                values[i * n_col + j].setNum(0);
+                values[i * n_col + j].setDen(1);
             }
         }
 }
@@ -384,23 +385,23 @@ bool Matrix::absColSum(int col, Fraction& result) const{
 }
 
 Fraction Matrix::norm1() const{
-    Vector V_Sum(n_col);
+    std::vector<Fraction> V_Sum;
     Fraction x;
     for (int i=0; i<n_col; i++){
         absColSum(i, x);
-        V_Sum.setValue(i,x);
+        V_Sum.push_back(x);
     }
-    return V_Sum.findMax();
+    return findMax(V_Sum);
 }
 
 Fraction Matrix::normInf() const{
-    Vector V_Sum(n_row);
+    std::vector<Fraction> V_Sum;
     Fraction x;
     for (int i=0; i<n_row; i++){
         absRowSum(i, x);
-        V_Sum.setValue(i,x);
+        V_Sum.push_back(x);
     }
-    return V_Sum.findMax();
+    return findMax(V_Sum);
 }
 
 Fraction Matrix::condNorm1() const{
@@ -429,7 +430,7 @@ bool Matrix::insertValue(unsigned short int position, Fraction* F) {
 bool Matrix::insertValue(unsigned short position, std::string F) {
     if (this->isLegalPosition(position)) {
         Fraction x;
-        x.stringToFraction(F);
+        x.fromString(F);
         values[position] = x;
         values[position].simplify();
         return true;
@@ -443,7 +444,7 @@ void Matrix::exportFile(std::string fileName) {
     if (exportFile.is_open()) {
         for (int i = 0; i < (n_row); i++) {
             for (int j = 0; j < n_col; j++) {
-                exportFile << values[i * n_col + j].num << "/" << values[i * n_col + j].den;
+                exportFile << values[i * n_col + j].getNum() << "/" << values[i * n_col + j].getDen();
                 if (j != n_col-1)
                     exportFile << ",";
             }
@@ -500,11 +501,9 @@ void AugmentedMatrix::print() const{
     for (int i=0; i<(n_row); i++){
         std::cout << "\n";
         for (int j=0; j<n_col; j++) {
-            values[i * n_col + j].print();
-            std::cout << "\t\t\t";
+            std::cout << values[i * n_col + j].toString() << "\t\t\t";
         }
-        std::cout << "|";
-        b[i].print();
+        std::cout << "|" << b[i].toString();
     }
 }
 
@@ -515,8 +514,8 @@ bool AugmentedMatrix::gauss() {
         if(values[i * n_col + i] != 0){
             for (int j = i+1; j < n_row; j++) {
                 m = values[j * n_col + i]/values[i * n_col + i];
-                values[j * n_col + i].num = 0;
-                values[j * n_col + i].den = 1;
+                values[j * n_col + i].setNum(0);
+                values[j * n_col + i].setDen(1);
                 for (int k = i+1; k < n_col; k++) {
                     values[j * n_col + k] = values[j * n_col + k] - m * values[i * n_col + k];
                 }
@@ -537,8 +536,8 @@ bool AugmentedMatrix::gaussPP() {
         if (values[i * n_col + i] != 0) {
             for (int j = i + 1; j < n_row; j++) {
                 m = values[j * n_col + i] / values[i * n_col + i];
-                values[j * n_col + i].num = 0;
-                values[j * n_col + i].den = 1;
+                values[j * n_col + i].setNum(0);
+                values[j * n_col + i].setDen(1);
                 for (int k = i + 1; k < n_col; k++) {
                     values[j * n_col + k] = values[j * n_col + k] - m * values[i * n_col + k];
                 }
@@ -596,8 +595,8 @@ bool AugmentedMatrix::backSubstitution() {
         Fraction sum;
         x[n_row-1] = b[n_row-1] / values[n_col*n_row-1];
         for (int i = (n_row-2) ; i >= 0; i--) {
-            sum.num = 0;
-            sum.den = 1;
+            sum.setNum(0);
+            sum.setDen(1);
             for (int j = i+1; j < n_col; j++) {
                 sum = sum + values[i * n_col + j] * x[j];
             }
@@ -610,8 +609,8 @@ bool AugmentedMatrix::backSubstitution() {
         double decimal;
         for (int k=0; k<n_row; k++) {
             std::cout << "x[" << k + 1 << "] = ";
-            x[k].print();
-            decimal = x[k].floatify();
+            std::cout << x[k].toString();
+            decimal = x[k].toFloat();
             std::cout << " = " << decimal;
             std::cout << std::endl;
         }
@@ -624,19 +623,34 @@ bool AugmentedMatrix::backSubstitution() {
     return no_error;
 }
 
-void AugmentedMatrix::insertKnownTerm(unsigned short int position, Fraction* F) const {
-    b[position] = *F;
-    b[position].simplify();
+bool AugmentedMatrix::insertKnownTerm(unsigned short int position, Fraction* F) const {
+    if(this->isKnownTermLegalPosition(position)) {
+        b[position] = *F;
+        b[position].simplify();
+        return true;
+    }
+    return false;
+}
+
+bool AugmentedMatrix::insertKnownTerm(unsigned short position, std::string F) const {
+    if(this->isKnownTermLegalPosition(position)) {
+        Fraction x;
+        x.fromString(F);
+        b[position] = x;
+        b[position].simplify();
+        return true;
+    }
+    return false;
 }
 
 bool AugmentedMatrix::operator==(const AugmentedMatrix &right) {
     for (int i=0; i<n_row; i++){
         for (int j=0; j<n_col; j++)
-            if ((values[i*n_col+j].num != right.values[i*n_col+j].num) || (values[i*n_col+j].den != right.values[i*n_col+j].den))
+            if ((values[i*n_col+j].getNum() != right.values[i*n_col+j].getNum()) || (values[i*n_col+j].getDen() != right.values[i*n_col+j].getDen()))
                 return false;
     }
     for (int i=0; i<n_row; i++){
-        if ((b[i].num != right.b[i].num) || (b[i].den != right.b[i].den))
+        if ((b[i].getNum() != right.b[i].getNum()) || (b[i].getDen() != right.b[i].getDen()))
             return false;
     }
     return true;
@@ -647,12 +661,12 @@ void AugmentedMatrix::exportFile(std::string fileName) {
     exportFile.open(fileName);
     for (int i = 0; i < (n_row); i++) {
         for (int j = 0; j < n_col; j++) {
-            exportFile << values[i * n_col + j].num << "/" << values[i * n_col + j].den;
+            exportFile << values[i * n_col + j].getNum() << "/" << values[i * n_col + j].getDen();
             if (j != n_col-1)
                 exportFile << ",";
         }
         exportFile << "|";
-        exportFile << b[i].num << "/" << b[i].den;
+        exportFile << b[i].getNum() << "/" << b[i].getDen();
         exportFile << ";";
     }
     exportFile.close();
@@ -695,13 +709,6 @@ bool AugmentedMatrix::importFile(std::string fileName) {
     }
     importFile.close();
     return true;
-}
-
-void AugmentedMatrix::insertKnownTerm(unsigned short position, std::string F) const {
-    Fraction x;
-    x.stringToFraction(F);
-    b[position] = x;
-    b[position].simplify();
 }
 
 bool AugmentedMatrix::setNewSize(const unsigned short newRows, const unsigned short newColumns) {

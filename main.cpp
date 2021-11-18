@@ -2,6 +2,7 @@
 #include "Matrix.h"
 
 int main() {
+
     char choice, augmented;
 
     do {
@@ -65,21 +66,18 @@ int main() {
             A.exportFile("input.txt");
             Fraction det;
             std::cout << "\n\n";
-            std::cout << "Norm 1 is: ";
-            A.norm1().print();
+            std::cout << "Norm 1 is: " << A.norm1().toString();
             std::cout << "\n";
-            std::cout << "Infinite norm is: ";
-            A.normInf().print();
+            std::cout << "Infinite norm is: " << A.normInf().toString();
             std::cout << "\n";
             if (E.determinant(det)) {
-                std::cout << "Determinant: ";
-                det.print();
+                std::cout << "Determinant: " << det.toString();
             } else std::cout << "NO DETERMINANT!\n";
             std::cout << "\nNorm 1 condition index: ";
-            std::cout << F.condNorm1().floatify();
+            std::cout << F.condNorm1().toFloat();
             std::cout << "\n";
             std::cout << "Infinite norm condition index: ";
-            std::cout << F.condNormInf().floatify();
+            std::cout << F.condNormInf().toFloat();
             std::cout << "\n";
             std::cout << "\nGauss:";
             if (A.gauss()) {
@@ -107,17 +105,13 @@ int main() {
             A.print();
             A.exportFile("input.txt");
             std::cout << "\n\n";
-            std::cout << "Norm 1 is: ";
-            A.norm1().print();
+            std::cout << "Norm 1 is: " << A.norm1().toString();
             std::cout << "\n";
-            std::cout << "Infinite norm is: ";
-            A.normInf().print();
+            std::cout << "Infinite norm is: " << A.normInf().toString();
             std::cout << "\n";
-            std::cout << "Conditioning index (norm 1): ";
-            A.condNorm1().print();
+            std::cout << "Conditioning index (norm 1): " << A.condNorm1().toString();
             std::cout << "\n";
-            std::cout << "Conditioning index (norm infinite): ";
-            A.condNormInf().print();
+            std::cout << "Conditioning index (norm infinite): " << A.condNormInf().toString();
             std::cout << "\n";
             std::cout << "\nGauss:";
             if (A.gauss()) {

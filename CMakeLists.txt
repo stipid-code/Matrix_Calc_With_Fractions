@@ -5,5 +5,5 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_subdirectory(Google_tests)
 
-add_executable(Matrix_Calc_With_Fractions main.cpp Matrix.cpp Matrix.h Vector.cpp Vector.h Numbers.cpp Numbers.h)
+add_executable(Matrix_Calc_With_Fractions main.cpp Matrix.cpp Matrix.h Numbers.cpp Numbers.h)
 

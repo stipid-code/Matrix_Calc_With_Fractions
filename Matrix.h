@@ -8,8 +8,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include <list>
-#include "Vector.h"
 #include "Numbers.h"
 
 class Matrix {
@@ -25,8 +25,8 @@ public:
     Matrix(std::list<Fraction> V, int row_number, int col_number) : n_col(col_number), n_row(row_number){
         unsigned short int i = 0;
         for (std::list<Fraction>::iterator itr = V.begin(); itr != V.end(); ++itr) {
-            values[i].num = itr->num;
-            values[i].den = itr->den;
+            values[i].setNum(itr->getNum());
+            values[i].setDen(itr->getDen());
             i++;
         }
     }
@@ -46,8 +46,8 @@ public:
     Matrix(int row_number, int col_number, int init_number) : n_col(col_number), n_row(row_number) {
         for (int i = 0; i < row_number; i++) {
             for (int j = 0; j < col_number; j++) {
-                values[i * col_number + j].num = init_number;
-                values[i * col_number + j].den = 1;
+                values[i * col_number + j].setNum(init_number);
+                values[i * col_number + j].setDen(1);
             }
         }
     }
@@ -101,7 +101,7 @@ public:
     bool swapColumns(int col1, int col2);
     virtual bool partialPivoting(int firstRow, int firstCol); // optimizes the matrix for gauss application
     virtual bool gaussPP(); // gauss elimination method with Partial Pivoting
-    bool craftIdentity(); // Makes a square matrix an identity
+    void makeIdentity(); // Makes a square matrix an identity
     bool inversion(); // Inverts the matrix
     bool determinant(Fraction& det) const;
 
@@ -162,8 +162,14 @@ public:
         delete[] b;
     }
 
-    void insertKnownTerm(unsigned short int position, Fraction* F) const; // inserts a value at a given position
-    void insertKnownTerm(unsigned short int position, std::string F) const;
+    bool isKnownTermLegalPosition(int const position) const { // checks if it's a legal absolute position
+        if (position < (n_row))
+            return true;
+        return false;
+    }
+
+    bool insertKnownTerm(unsigned short int position, Fraction* F) const; // inserts a value at a given position
+    bool insertKnownTerm(unsigned short int position, std::string F) const;
     bool setNewSize(unsigned short int const newRows, unsigned short int const newColumns) override; // change size of the matrix
 
     bool operator==(const AugmentedMatrix& right);

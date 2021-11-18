@@ -11,7 +11,7 @@ void Fraction::simplify() {
         den = den/num;
         num = 1;
     }
-    else if (num % den == 0){
+    else if (den != 0 && num % den == 0){ // den != 0 added to avoid the division by zero that could occur.
         num = num/den;
         den = 1;
     }
@@ -104,23 +104,27 @@ void Fraction::input() {
     simplify();
 }
 
-void Fraction::print() const{
+std::string Fraction::toString() const {
+    std::stringstream output;
     if (den > 1)
-        std::cout << num << "/" << den;
+        output << num << "/" << den;
     else if (den == 1){
-        std::cout << num;
+        output << num;
     }
     else if (den == 0){
-        std::cout << "nan";
+        output << "nan";
     }
     else if (den < 0 && den != -1) {
-        std::cout << -num << "/" << -den;
+        output << -num << "/" << -den;
     } else {
-        std::cout << -num;
+        output << -num;
     }
+    std::string out;
+    output >> out;
+    return out;
 }
 
-float Fraction::floatify() const {
+float Fraction::toFloat() const {
     return (float)num/(float)den;
 }
 
@@ -273,7 +277,7 @@ void Fraction::makeFraction(std::string input) {
     }
 }
 
-void Fraction::stringToFraction(std::string const input){
+void Fraction::fromString(std::string const input){
     bool isFloat = false;
     std::string first, second;
     std::stringstream ss1, ss2;

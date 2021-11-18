@@ -10,6 +10,7 @@
 #include <string>
 #include <iomanip>
 #include <sstream>
+#include <vector>
 
 template <typename T>
 void roundZero(T& a, T& epsilon){ // if the T number is too near to 0, a becomes 0
@@ -29,6 +30,16 @@ bool almostEqual(T& a, T& b, T& epsilon){
         return false;
 }
 
+template <typename T>
+T findMax(std::vector<T> V) {
+    T max = *(V.begin());
+    for (auto itr : V) {
+        if (itr > max)
+            max = itr;
+    }
+    return max;
+}
+
 class Fraction {
 public:
     Fraction(int numerator, int denominator) : num(numerator), den(denominator) {
@@ -36,6 +47,22 @@ public:
     }
 
     Fraction() : num(1), den(1) {}
+
+    int getNum() const {
+        return num;
+    }
+
+    void setNum(int num) {
+        Fraction::num = num;
+    }
+
+    int getDen() const {
+        return den;
+    }
+
+    void setDen(int den) {
+        Fraction::den = den;
+    }
 
     Fraction operator+(const Fraction& right) const;
     Fraction operator-(const Fraction& right) const;
@@ -55,13 +82,13 @@ public:
 
     void simplify();
     void input();
-    void print() const;
-    float floatify() const;
-    void stringToFraction(std::string const input);
+    std::string toString() const; // toString() replaces print() and eventually makes std::cout print the fraction
+    float toFloat() const;
+    void fromString(std::string const input);
 
-    void makeFraction(std::string input); // attempts to return a fraction given a double
+    void makeFraction(std::string input); // creates a fraction given a string
 
-public:
+private:
     int num;
     int den;
 };
