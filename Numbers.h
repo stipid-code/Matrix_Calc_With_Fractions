@@ -40,6 +40,8 @@ T findMax(std::vector<T> V) {
     return max;
 }
 
+int gcd(int, int);
+
 class Fraction {
 public:
     Fraction(int numerator, int denominator) : num(numerator), den(denominator) {

@@ -5,54 +5,25 @@
 #include "Numbers.h"
 #include <iostream>
 
+int gcd(int a, int b){
+    /* algoritmo di euclide per il massimo comune divisore,
+     * per dettagli puoi vedere wikipedia, o pag 249 (~257 del pdf) di sto libro
+     * https://ocw.mit.edu/courses/mathematics-for-computer-science/resources/mit6_042js15_textbook/ */
+    int tmp;
+    while(b){
+	tmp = b;
+	b = a%b;
+	a = tmp;
+    }
+    return a;
+}
+
 void Fraction::simplify() {
-
-    if (num != 0 && den % num == 0){
-        den = den/num;
-        num = 1;
-    }
-    else if (den != 0 && num % den == 0){ // den != 0 added to avoid the division by zero that could occur.
-        num = num/den;
-        den = 1;
-    }
-
-    int count, div;
-    bool found;
-    if (den != 1 && num != 1) {
-        do {
-            if (std::abs(num) > std::abs(den)) {
-                count = 2; // first attempt to find a divider
-                found = false;
-                while (count < std::abs(den) && found == false){
-                    if (num % count == 0 && den % count == 0) {
-                        div = count;
-                        found = true;
-                    }
-                    count++;
-                }
-                if (found == true) {
-                    num = num / div;
-                    den = den / div;
-                }
-            } else {
-                count = 2;
-                found = false;
-                while (count < std::abs(num) && found == false){
-                    if (num % count == 0 && den % count == 0) {
-                        div = count;
-                        found = true;
-                    }
-                    count++;
-                }
-                if (found == true) {
-                    num = num / div;
-                    den = den / div;
-                }
-            }
-        } while (found == true);
-    }
-
-    //checks if den < 0, in that case it puts '-' before num instead of den
+    if(den == 0)
+	return;
+    int common = gcd(std::abs(num),std::abs(den));
+    num = num/common;
+    den = den/common;
     if (den < 0) {
         num = -num;
         den = -den;
@@ -74,13 +45,15 @@ void Fraction::input() {
 
     if (j != input.length()) {
         for (int i = 0; i < j; i++){
-            first += input[i];
+	    //rewrite using substr
+	    first += input[i]; 
         }
         for (int k = j+1; k < input.length(); k++){
             if (input[k] != ' '){
                 second += input[k];
             }
         }
+	//stoi
         ss1 << second;
         ss1 >> den;
         ss2 << first;
@@ -96,6 +69,7 @@ void Fraction::input() {
             makeFraction(first);
         }
         else {
+	    //stoi
             ss1 << first;
             ss1 >> num;
             den = 1;
